@@ -25,7 +25,7 @@ HEADERS += nativeengine.h \
     ogrenetworkaccessmanager.h \
     connectionmanager.h
 
-include(../Build/Common.pri)
+include(../Common.pri)
 include(../ThirdParty/Ogre.pri)
 
 RESOURCES += \
