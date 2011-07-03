@@ -15,12 +15,6 @@
     }
 }
 
-%include arrays_csharp.i
-
-CSHARP_ARRAYS(char*, string)
-
-%apply char* OUTPUT[] {char **}
-
 // Make classes partial
 %typemap(csclassmodifiers) ExtendMe "public partial class"
 

@@ -365,20 +365,18 @@ SWIGEXPORT int SWIGSTDCALL CSharp_NativeEngineSettings_argc_get(void * jarg1) {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NativeEngineSettings_argv_set(void * jarg1, char** jarg2) {
+SWIGEXPORT void SWIGSTDCALL CSharp_NativeEngineSettings_argv_set(void * jarg1, void * jarg2) {
   NativeEngineSettings *arg1 = (NativeEngineSettings *) 0 ;
   char **arg2 = (char **) 0 ;
   
   arg1 = (NativeEngineSettings *)jarg1; 
-  arg2 = jarg2;
+  arg2 = (char **)jarg2; 
   if (arg1) (arg1)->argv = (char const **)arg2;
-  
-  
 }
 
 
-SWIGEXPORT char** SWIGSTDCALL CSharp_NativeEngineSettings_argv_get(void * jarg1) {
-  char** jresult ;
+SWIGEXPORT void * SWIGSTDCALL CSharp_NativeEngineSettings_argv_get(void * jarg1) {
+  void * jresult ;
   NativeEngineSettings *arg1 = (NativeEngineSettings *) 0 ;
   char **result = 0 ;
   

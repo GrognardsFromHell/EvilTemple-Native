@@ -22,8 +22,8 @@ if not isdir('swigwin-2.0.4'):
 	zf.close()	
 
 # Create generated code directory (although it should already exist)
-if not isdir('../../NativeEngine.Interop/Generated'):
-	mkdir('../../NativeEngine.Interop/Generated')
+if not isdir('Generated'):
+	mkdir('Generated')
 	
 # Remove previously generated code
 
@@ -31,4 +31,6 @@ if not isdir('../../NativeEngine.Interop/Generated'):
 swigPath = "swigwin-2.0.4/swig.exe"
 
 print("Generating Wrapper Source Code")
-call([swigPath, "-c++", "-namespace", "EvilTemple.NativeEngine.Interop", "-csharp", "-dllimport", "NativeEngine", "-outdir", "../NativeEngine.Interop/Generated", "../NativeEngine/wrapper/nativeengine.i"])
+call([swigPath, "-c++", "-namespace", "EvilTemple.NativeEngine.Interop", "-csharp", "-dllimport", "NativeEngine", "-outdir", "Generated", "../NativeEngine/wrapper/nativeengine.i"])
+
+print("You may have to copy the wrapper code from the current directory to another directory.")
