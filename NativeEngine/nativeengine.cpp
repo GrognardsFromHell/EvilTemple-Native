@@ -4,6 +4,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QTextStream>
 #include <QtOpenGL/QGLWidget>
+#include <QtCore/QScopedArrayPointer>
 #include <QtGui/QApplication>
 #include <QtDeclarative/QDeclarativeView>
 #include <QtDeclarative/QDeclarativeError>
@@ -67,6 +68,14 @@ public:
     Ogre::Camera *camera;
     Ogre::Viewport *viewport;
     float zoomLevel;
+
+    KeyEventFn keyPressCallback;
+    KeyEventFn keyReleaseCallback;
+    MouseEventFn mouseDoubleClickCallback;
+    MouseEventFn mousePressCallback;
+    MouseEventFn mouseReleaseCallback;
+    MouseEventFn mouseMoveCallback;
+    WheelEventFn wheelCallback;
 
     NativeEnginePrivate(const NativeEngineSettings *settings);
     ~NativeEnginePrivate();
@@ -169,7 +178,51 @@ QObject *NativeEngine::interfaceRoot()
     return d->uiView->rootObject();
 }
 
-NativeEnginePrivate::NativeEnginePrivate(const NativeEngineSettings *settings) : glWidget(0), uiView(0), ogreRoot(0), ogreWindow(0), zoomLevel(1), camera(0), viewport(0)
+void NativeEngine::setKeyPressCallback(KeyEventFn fn)
+{
+    d->keyPressCallback = fn;
+}
+
+void NativeEngine::setKeyReleaseCallback(KeyEventFn fn)
+{
+    d->keyReleaseCallback = fn;
+}
+
+void NativeEngine::setMouseDoubleClickCallback(MouseEventFn fn)
+{
+    d->mouseDoubleClickCallback = fn;
+}
+
+void NativeEngine::setMousePressCallback(MouseEventFn fn)
+{
+    d->mousePressCallback = fn;
+}
+
+void NativeEngine::setMouseReleaseCallback(MouseEventFn fn)
+{
+    d->mouseReleaseCallback = fn;
+}
+
+void NativeEngine::setMouseMoveCallback(MouseEventFn fn)
+{
+    d->mouseMoveCallback = fn;
+}
+
+void NativeEngine::setWheelCallback(WheelEventFn fn)
+{
+    d->wheelCallback = fn;
+}
+
+Ogre::SceneManager *NativeEngine::mainScene()
+{
+    return d->sceneManager;
+}
+
+NativeEnginePrivate::NativeEnginePrivate(const NativeEngineSettings *settings)
+      : glWidget(0), uiView(0), ogreRoot(0), ogreWindow(0), zoomLevel(1), camera(0), viewport(0),
+        keyPressCallback(0),keyReleaseCallback(0), mouseDoubleClickCallback(0),
+        mousePressCallback(0), mouseReleaseCallback(0), mouseMoveCallback(0),
+        wheelCallback(0)
 {
     initQApplication(settings);
 
@@ -244,7 +297,7 @@ void NativeEnginePrivate::initQApplication(const NativeEngineSettings *settings)
 
 void NativeEnginePrivate::initOgre()
 {
-#if defined(_DEBUG)
+#if !defined(NDEBUG)
     Ogre::String pluginsCfg = "plugins_d.cfg";
 #else
     Ogre::String pluginsCfg = "plugins.cfg";
@@ -274,10 +327,10 @@ void NativeEnginePrivate::initOgre()
     /* We don't use mip maps since our camera distance from all objects is fixed */
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
 
-    /* Load all resources */
-    Ogre::ResourceGroupManager &resourceManager = Ogre::ResourceGroupManager::getSingleton();
+    /* here we could load "builtin" resources, but all other resources should be controlled by c# */
+    /*Ogre::ResourceGroupManager &resourceManager = Ogre::ResourceGroupManager::getSingleton();
     resourceManager.addResourceLocation("C:/Users/Sebastian/AppData/Local/EvilTemple/data.zip", "Zip", "General", true);
-    resourceManager.initialiseAllResourceGroups();
+    resourceManager.initialiseAllResourceGroups();*/
 
     /* Create the actual scene manager */
     sceneManager = ogreRoot->createSceneManager("DefaultSceneManager");
@@ -309,7 +362,7 @@ void NativeEnginePrivate::initOgre()
     viewport->setBackgroundColour(Ogre::ColourValue(0.5, 0.5, 0.5));
 
     /* TEST */
-    Ogre::Entity* model = sceneManager->createEntity("meshes/pcs/pc_human_male/pc_human_male.mesh");
+    /*Ogre::Entity* model = sceneManager->createEntity("meshes/pcs/pc_human_male/pc_human_male.mesh");
 
     Ogre::SceneNode* headNode = sceneManager->getRootSceneNode()->createChildSceneNode();
     headNode->setPosition(0, 0, 0);
@@ -327,7 +380,7 @@ void NativeEnginePrivate::initOgre()
     l->setType(Ogre::Light::LT_DIRECTIONAL);
     l->setDirection(-0.6324093645670703858428703903848,
                     -0.77463436252716949786709498111783,
-                    0);
+                    0);*/
 
     /* /TEST */
 }
@@ -341,28 +394,81 @@ bool NativeEnginePrivate::eventFilter(QObject *receiver, QEvent *event)
     return false;
 }
 
+static MouseEvent createMouseEvent(QMouseEvent *e)
+{
+    MouseEvent result;
+
+    result.button = e->button();
+    result.buttons = e->buttons();
+    result.x = e->x();
+    result.y = e->y();
+
+    return result;
+}
+
+
+static WheelEvent createWheelEvent(QWheelEvent *e)
+{
+    WheelEvent result;
+
+    result.delta = e->delta();
+    result.orientation = e->orientation();
+    result.buttons = e->buttons();
+    result.x = e->x();
+    result.y = e->y();
+
+    return result;
+}
+
+
 bool NativeEnginePrivate::handleGlWidgetEvent(QEvent *event)
 {
     switch (event->type()) {
     case QEvent::KeyPress:
+        {
+            QKeyEvent *ke = static_cast<QKeyEvent*>(event);
+            if (keyPressCallback) {
+                QScopedArrayPointer<wchar_t> text(new wchar_t[ke->text().length()]);
+                ke->text().toWCharArray(text.data());
+                keyPressCallback(ke->count(), ke->isAutoRepeat(), ke->key(), ke->modifiers(), text.data());
+            }
+        }
         return true;
 
     case QEvent::KeyRelease:
+    {
+        QKeyEvent *ke = static_cast<QKeyEvent*>(event);
+        if (keyReleaseCallback) {
+            QScopedArrayPointer<wchar_t> text(new wchar_t[ke->text().length()]);
+            ke->text().toWCharArray(text.data());
+            keyReleaseCallback(ke->count(), ke->isAutoRepeat(), ke->key(), ke->modifiers(), text.data());
+        }
+    }
         return true;
 
     case QEvent::MouseButtonDblClick:
+        if (mouseDoubleClickCallback)
+            mouseDoubleClickCallback(createMouseEvent(static_cast<QMouseEvent*>(event)));
         return true;
 
     case QEvent::MouseButtonPress:
+        if (mousePressCallback)
+            mousePressCallback(createMouseEvent(static_cast<QMouseEvent*>(event)));
         return true;
 
     case QEvent::MouseButtonRelease:
+        if (mouseReleaseCallback)
+            mouseReleaseCallback(createMouseEvent(static_cast<QMouseEvent*>(event)));
         return true;
 
     case QEvent::MouseMove:
+        if (mouseMoveCallback)
+            mouseMoveCallback(createMouseEvent(static_cast<QMouseEvent*>(event)));
         return true;
 
     case QEvent::Wheel:
+        if (wheelCallback)
+            wheelCallback(createWheelEvent(static_cast<QWheelEvent*>(event)));
         return true;
 
     case QEvent::Paint:

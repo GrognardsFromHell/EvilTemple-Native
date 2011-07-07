@@ -2,6 +2,7 @@
 
 %{
 #include "../nativeengine.h"
+#include "../resourcemanager.h"
 %}
 
 // Language independent exception handler
@@ -16,7 +17,7 @@
 }
 
 // Make classes partial
-%typemap(csclassmodifiers) ExtendMe "public partial class"
+%typemap(csclassmodifiers) NativeEngine "public partial class"
 
 // Typemaps for passing QObject by pointer
 %typemap(in)                           QObject* "/* in* */ $1 = $input;"
@@ -56,5 +57,106 @@
     }
 %}
 
-%include "../nativeengine.h"
+/* Typemapping for QByteArray::data() */
+%typemap(cstype, excode=SWIGEXCODE2) const char* constData() "byte[]"
+%typemap(imtype, excode=SWIGEXCODE2) const char* constData() "IntPtr"
+
+%typemap(csout, excode=SWIGEXCODE2) const char* constData() %{
+    {
+        byte[] ret = new byte[this.size()];
+        IntPtr data = $imcall;
+        System.Runtime.InteropServices.Marshal.Copy(data, ret, 0, this.size());
+        $excode
+        return ret;
+    }
+%}
+
+class QByteArray {
+public:
+    ~QByteArray();
+
+    int size();
+    const char *constData();
+private:
+    QByteArray();
+};
+
+
+%include "std_string.i"
+
+%{
+#include <Ogre.h>
+%}
+
+%rename("Scene") SceneManager;
+namespace Ogre {
+
+class MovableObject {
+private:
+    MovableObject();
+    ~MovableObject();
+};
+
+class Entity : public MovableObject {
+private:
+    Entity();
+    ~Entity();
+};
+
+class SceneNode {
+public:
+    %rename("AttachObject") attachObject;
+    void attachObject(MovableObject *obj);
+
+    %rename("CreateChildSceneNode") createChildSceneNode;
+    SceneNode *createChildSceneNode();
+    SceneNode *createChildSceneNode(std::string name);
+
+    void setPosition(float x, float y, float z);
+    void setOrientation(float w, float x, float y, float z);
+    void setScale(float x, float y, float z);
+
+private:
+    SceneNode();
+    ~SceneNode();
+};
+
+class SceneManager {
+public:
+    %rename("CreateEntity") createEntity;
+    Entity *createEntity(std::string entityName, std::string meshFilename);
+    Entity *createEntity(std::string meshFilename);
+
+    %rename("CreateSceneNode") createSceneNode;
+    SceneNode *createSceneNode();
+    SceneNode *createSceneNode(std::string name);
+private:
+    SceneManager();
+    ~SceneManager();
+};
+
+}
+
+struct NativeEngineSettings {
+    int argc;
+    const char** argv;
+};
+
+class NativeEngine
+{
+public:
+    NativeEngine(const NativeEngineSettings *settings);
+    ~NativeEngine();
+
+    void processEvents();
+
+    void renderFrame();
+
+    Ogre::SceneManager *mainScene();
+
+    QObject *interfaceRoot();
+};
+
+%include "../resourcemanager.h"
+
 

@@ -14,7 +14,8 @@ DEFINES += NATIVEENGINE_LIBRARY
 SOURCES += nativeengine.cpp \
     ogrenetworkaccessmanager.cpp \
     qobject_wrap.cpp \
-    connectionmanager.cpp
+    connectionmanager.cpp \
+    resourcemanager.cpp
 
 # ADD SWIG WRAPPERS
 SOURCES += wrapper/nativeengine_wrap.cxx
@@ -23,7 +24,9 @@ HEADERS += nativeengine.h \
     global.h \
     ogre.h \
     ogrenetworkaccessmanager.h \
-    connectionmanager.h
+    connectionmanager.h \
+    resourcemanager.h \
+    wraputils.h
 
 include(../Common.pri)
 include(../ThirdParty/Ogre.pri)

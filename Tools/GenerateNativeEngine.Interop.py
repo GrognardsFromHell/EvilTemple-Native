@@ -31,6 +31,6 @@ if not isdir('Generated'):
 swigPath = "swigwin-2.0.4/swig.exe"
 
 print("Generating Wrapper Source Code")
-call([swigPath, "-c++", "-namespace", "EvilTemple.NativeEngine.Interop", "-csharp", "-dllimport", "NativeEngine", "-outdir", "Generated", "../NativeEngine/wrapper/nativeengine.i"])
+call([swigPath, "-c++", "-namespace", "EvilTemple.NativeEngineInterop", "-csharp", "-dllimport", "NativeEngine", "-outdir", "Generated", "../NativeEngine/wrapper/nativeengine.i"])
 
 print("You may have to copy the wrapper code from the current directory to another directory.")

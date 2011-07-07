@@ -7,3 +7,10 @@ CONFIG(debug, debug|release) {
 } else {
     DESTDIR = $${PWD}/Build/release/bin/
 }
+
+# Generate PDB files in release mode
+win32 {
+    QMAKE_CFLAGS_RELEASE += -Zi
+    QMAKE_CXXFLAGS_RELEASE += -Zi
+    QMAKE_LFLAGS_RELEASE += -debug -opt:ref -opt:icf
+}

@@ -12,12 +12,9 @@
 #include <QtCore/QMap>
 
 #include "connectionmanager.h"
+#include "nativeengine.h"
 
-#if defined(Q_OS_WIN)
-#define WRAPPER_STDCALL __stdcall
-#else
-#define WRAPPER_STDCALL
-#endif
+#include "wraputils.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -28,97 +25,97 @@ extern "C" {
   properties to be read and written.
  */
 
-Q_DECL_EXPORT QVariant* WRAPPER_STDCALL Variant_FromString(const wchar_t *string)
+WRAPPER_EXPORT QVariant* WRAPPER_STDCALL Variant_FromString(const wchar_t *string)
 {
     Q_ASSERT(string);
     return new QVariant(QString::fromUtf16(string));
 }
 
-Q_DECL_EXPORT QVariant* WRAPPER_STDCALL Variant_FromReal(double number)
+WRAPPER_EXPORT QVariant* WRAPPER_STDCALL Variant_FromReal(double number)
 {
     return new QVariant(number);
 }
 
-Q_DECL_EXPORT QVariant* WRAPPER_STDCALL Variant_FromInt(int number)
+WRAPPER_EXPORT QVariant* WRAPPER_STDCALL Variant_FromInt(int number)
 {
     return new QVariant(number);
 }
 
-Q_DECL_EXPORT QVariant* WRAPPER_STDCALL Variant_FromBool(bool value)
+WRAPPER_EXPORT QVariant* WRAPPER_STDCALL Variant_FromBool(bool value)
 {
     return new QVariant(value);
 }
 
-Q_DECL_EXPORT QVariant* WRAPPER_STDCALL Variant_FromMap(QVariantMap *value)
+WRAPPER_EXPORT QVariant* WRAPPER_STDCALL Variant_FromMap(QVariantMap *value)
 {
     Q_ASSERT(value);
     return new QVariant(*value);
 }
 
-Q_DECL_EXPORT QVariant* WRAPPER_STDCALL Variant_FromList(QVariantList *value)
+WRAPPER_EXPORT QVariant* WRAPPER_STDCALL Variant_FromList(QVariantList *value)
 {
     Q_ASSERT(value);
     return new QVariant(*value);
 }
 
-Q_DECL_EXPORT bool WRAPPER_STDCALL Variant_ToBool(QVariant *v)
+WRAPPER_EXPORT bool WRAPPER_STDCALL Variant_ToBool(QVariant *v)
 {
     Q_ASSERT(v);
     return v->toBool();
 }
 
-Q_DECL_EXPORT int WRAPPER_STDCALL Variant_ToInt(QVariant *v)
+WRAPPER_EXPORT int WRAPPER_STDCALL Variant_ToInt(QVariant *v)
 {
     Q_ASSERT(v);
     return v->toInt();
 }
 
-Q_DECL_EXPORT double WRAPPER_STDCALL Variant_ToReal(QVariant *v)
+WRAPPER_EXPORT double WRAPPER_STDCALL Variant_ToReal(QVariant *v)
 {
     Q_ASSERT(v);
     return v->toReal();
 }
 
-Q_DECL_EXPORT QString* WRAPPER_STDCALL Variant_ToString(QVariant *v)
+WRAPPER_EXPORT QString* WRAPPER_STDCALL Variant_ToString(QVariant *v)
 {
     Q_ASSERT(v);
     return new QString(v->toString());
 }
 
-Q_DECL_EXPORT QVariantList* WRAPPER_STDCALL Variant_ToList(QVariant *v)
+WRAPPER_EXPORT QVariantList* WRAPPER_STDCALL Variant_ToList(QVariant *v)
 {
     return new QVariantList(v->toList());
 }
 
-Q_DECL_EXPORT QVariantMap* WRAPPER_STDCALL Variant_ToMap(QVariant *v)
+WRAPPER_EXPORT QVariantMap* WRAPPER_STDCALL Variant_ToMap(QVariant *v)
 {
     return new QVariantMap(v->toMap());
 }
 
-Q_DECL_EXPORT QVariant* WRAPPER_STDCALL Variant_NewNull()
+WRAPPER_EXPORT QVariant* WRAPPER_STDCALL Variant_NewNull()
 {
     return new QVariant();
 }
 
-Q_DECL_EXPORT bool WRAPPER_STDCALL Variant_IsNull(QVariant *v)
+WRAPPER_EXPORT bool WRAPPER_STDCALL Variant_IsNull(QVariant *v)
 {
     Q_ASSERT(v);
     return v->isNull();
 }
 
-Q_DECL_EXPORT const char* WRAPPER_STDCALL Variant_GetType(QVariant *v)
+WRAPPER_EXPORT const char* WRAPPER_STDCALL Variant_GetType(QVariant *v)
 {
     Q_ASSERT(v);
     return v->typeName();
 }
 
-Q_DECL_EXPORT QObject* WRAPPER_STDCALL Variant_GetQObjectStar(QVariant *v)
+WRAPPER_EXPORT QObject* WRAPPER_STDCALL Variant_GetQObjectStar(QVariant *v)
 {
     Q_ASSERT(v);
     return v->value<QObject*>();
 }
 
-Q_DECL_EXPORT void WRAPPER_STDCALL Variant_Free(QVariant *v)
+WRAPPER_EXPORT void WRAPPER_STDCALL Variant_Free(QVariant *v)
 {
     delete v;
 }
@@ -127,32 +124,32 @@ Q_DECL_EXPORT void WRAPPER_STDCALL Variant_Free(QVariant *v)
  * Variant List Functions
  ********************************************************************************/
 
-Q_DECL_EXPORT QVariantList* WRAPPER_STDCALL VariantList_New(int capacity)
+WRAPPER_EXPORT QVariantList* WRAPPER_STDCALL VariantList_New(int capacity)
 {
     auto result = new QVariantList();
     result->reserve(capacity);
     return result;
 }
 
-Q_DECL_EXPORT QVariant* WRAPPER_STDCALL VariantList_Get(QVariantList *v, int i)
+WRAPPER_EXPORT QVariant* WRAPPER_STDCALL VariantList_Get(QVariantList *v, int i)
 {
     Q_ASSERT(v);
     return new QVariant(v->at(i));
 }
 
-Q_DECL_EXPORT void WRAPPER_STDCALL VariantList_Add(QVariantList *list, QVariant *v)
+WRAPPER_EXPORT void WRAPPER_STDCALL VariantList_Add(QVariantList *list, QVariant *v)
 {
     Q_ASSERT(list);
     list->append(*v);
 }
 
-Q_DECL_EXPORT int WRAPPER_STDCALL VariantList_Length(QVariantList *list)
+WRAPPER_EXPORT int WRAPPER_STDCALL VariantList_Length(QVariantList *list)
 {
     Q_ASSERT(list);
     return list->length();
 }
 
-Q_DECL_EXPORT void WRAPPER_STDCALL VariantList_Free(QVariantList *list)
+WRAPPER_EXPORT void WRAPPER_STDCALL VariantList_Free(QVariantList *list)
 {
     Q_ASSERT(list);
     delete list;
@@ -162,12 +159,12 @@ Q_DECL_EXPORT void WRAPPER_STDCALL VariantList_Free(QVariantList *list)
  * Variant Map Functions
  ********************************************************************************/
 
-Q_DECL_EXPORT QVariantMap* WRAPPER_STDCALL VariantMap_New()
+WRAPPER_EXPORT QVariantMap* WRAPPER_STDCALL VariantMap_New()
 {
     return new QVariantMap;
 }
 
-Q_DECL_EXPORT void WRAPPER_STDCALL VariantMap_Add(QVariantMap *map, const wchar_t *key, QVariant *value)
+WRAPPER_EXPORT void WRAPPER_STDCALL VariantMap_Add(QVariantMap *map, const wchar_t *key, QVariant *value)
 {
     Q_ASSERT(map);
     Q_ASSERT(key);
@@ -177,7 +174,7 @@ Q_DECL_EXPORT void WRAPPER_STDCALL VariantMap_Add(QVariantMap *map, const wchar_
     map->insert(keyStr, *value);
 }
 
-Q_DECL_EXPORT QVariant* WRAPPER_STDCALL VariantMap_Get(QVariantMap *map, const wchar_t *key)
+WRAPPER_EXPORT QVariant* WRAPPER_STDCALL VariantMap_Get(QVariantMap *map, const wchar_t *key)
 {
     Q_ASSERT(map);
     Q_ASSERT(key);
@@ -186,20 +183,20 @@ Q_DECL_EXPORT QVariant* WRAPPER_STDCALL VariantMap_Get(QVariantMap *map, const w
     return new QVariant(map->value(keyStr));
 }
 
-Q_DECL_EXPORT int WRAPPER_STDCALL VariantMap_Size(QVariantMap *map)
+WRAPPER_EXPORT int WRAPPER_STDCALL VariantMap_Size(QVariantMap *map)
 {
     Q_ASSERT(map);
     return map->size();
 }
 
 
-Q_DECL_EXPORT QList<QString>* WRAPPER_STDCALL VariantMap_Keys(QVariantMap *map)
+WRAPPER_EXPORT QList<QString>* WRAPPER_STDCALL VariantMap_Keys(QVariantMap *map)
 {
     Q_ASSERT(map);
     return new QList<QString>(map->keys());
 }
 
-Q_DECL_EXPORT void WRAPPER_STDCALL VariantMap_Free(QVariantMap *map)
+WRAPPER_EXPORT void WRAPPER_STDCALL VariantMap_Free(QVariantMap *map)
 {
     Q_ASSERT(map);
     delete map;
@@ -209,19 +206,19 @@ Q_DECL_EXPORT void WRAPPER_STDCALL VariantMap_Free(QVariantMap *map)
  * QStringList Functions
  ********************************************************************************/
 
-Q_DECL_EXPORT QString* WRAPPER_STDCALL StringList_Get(QList<QString> *list, int i)
+WRAPPER_EXPORT QString* WRAPPER_STDCALL StringList_Get(QList<QString> *list, int i)
 {
     Q_ASSERT(list);
     return new QString(list->at(i));
 }
 
-Q_DECL_EXPORT int WRAPPER_STDCALL StringList_Length(QList<QString> *list)
+WRAPPER_EXPORT int WRAPPER_STDCALL StringList_Length(QList<QString> *list)
 {
     Q_ASSERT(list);
     return list->length();
 }
 
-Q_DECL_EXPORT void WRAPPER_STDCALL StringList_Free(QList<QString> *list)
+WRAPPER_EXPORT void WRAPPER_STDCALL StringList_Free(QList<QString> *list)
 {
     Q_ASSERT(list);
     delete list;
@@ -231,13 +228,13 @@ Q_DECL_EXPORT void WRAPPER_STDCALL StringList_Free(QList<QString> *list)
  * QString Functions
  ********************************************************************************/
 
-Q_DECL_EXPORT const wchar_t* WRAPPER_STDCALL QString_Utf16(QString *s)
+WRAPPER_EXPORT const wchar_t* WRAPPER_STDCALL QString_Utf16(QString *s)
 {
     Q_ASSERT(s);
     return s->utf16();
 }
 
-Q_DECL_EXPORT void WRAPPER_STDCALL QString_Free(QString *s)
+WRAPPER_EXPORT void WRAPPER_STDCALL QString_Free(QString *s)
 {
     Q_ASSERT(s);
     delete s;
@@ -247,7 +244,7 @@ Q_DECL_EXPORT void WRAPPER_STDCALL QString_Free(QString *s)
  * QObject Functions
  ********************************************************************************/
 
-Q_DECL_EXPORT bool WRAPPER_STDCALL QObject_SetProperty(QObject *obj, const char *name, QVariant *value)
+WRAPPER_EXPORT bool WRAPPER_STDCALL QObject_SetProperty(QObject *obj, const char *name, QVariant *value)
 {
     Q_ASSERT(obj);
     Q_ASSERT(name);
@@ -256,7 +253,7 @@ Q_DECL_EXPORT bool WRAPPER_STDCALL QObject_SetProperty(QObject *obj, const char 
     return obj->setProperty(name, *value);
 }
 
-Q_DECL_EXPORT QVariant *WRAPPER_STDCALL QObject_GetProperty(QObject *obj, const char *name)
+WRAPPER_EXPORT QVariant *WRAPPER_STDCALL QObject_GetProperty(QObject *obj, const char *name)
 {
     Q_ASSERT(obj);
     Q_ASSERT(name);
@@ -268,7 +265,7 @@ Q_DECL_EXPORT QVariant *WRAPPER_STDCALL QObject_GetProperty(QObject *obj, const 
         return new QVariant(result);
 }
 
-Q_DECL_EXPORT bool WRAPPER_STDCALL QObject_CallMetaMethod(QObject *obj, const char *methodName, QVariant *args[], int argCount, QVariant **result, QString **errorMessage)
+WRAPPER_EXPORT bool WRAPPER_STDCALL QObject_CallMetaMethod(QObject *obj, const char *methodName, QVariant *args[], int argCount, QVariant **result, QString **errorMessage)
 {
     Q_ASSERT(obj);
     Q_ASSERT(methodName);
@@ -370,7 +367,7 @@ Q_DECL_EXPORT bool WRAPPER_STDCALL QObject_CallMetaMethod(QObject *obj, const ch
     return success;
 }
 
-Q_DECL_EXPORT const char* WRAPPER_STDCALL QObject_GetClassName(QObject *o)
+WRAPPER_EXPORT const char* WRAPPER_STDCALL QObject_GetClassName(QObject *o)
 {
     Q_ASSERT(o);
     return o->metaObject()->className();
@@ -388,46 +385,89 @@ static inline void initConnectionManager()
         connectionManager = new ConnectionManager;
 }
 
-Q_DECL_EXPORT int WRAPPER_STDCALL ConnectionManager_Connect(QObject *sender, const char *signalName, int paramCount)
+WRAPPER_EXPORT int WRAPPER_STDCALL ConnectionManager_Connect(QObject *sender, const char *signalName, int paramCount)
 {
     initConnectionManager();
     return connectionManager->connect(sender, signalName, paramCount);
 }
 
-Q_DECL_EXPORT bool WRAPPER_STDCALL ConnectionManager_Disconnect(int slotId)
+WRAPPER_EXPORT bool WRAPPER_STDCALL ConnectionManager_Disconnect(int slotId)
 {
     initConnectionManager();
     return connectionManager->disconnect(slotId);
 }
 
-Q_DECL_EXPORT int WRAPPER_STDCALL ConnectionManager_GetConnectionCount()
+WRAPPER_EXPORT int WRAPPER_STDCALL ConnectionManager_GetConnectionCount()
 {
     initConnectionManager();
     return connectionManager->connectionCount();
 }
 
-Q_DECL_EXPORT void WRAPPER_STDCALL ConnectionManager_SetCallSlotCallback(CallSlotFn callback)
+WRAPPER_EXPORT void WRAPPER_STDCALL ConnectionManager_SetCallSlotCallback(CallSlotFn callback)
 {
     initConnectionManager();
     connectionManager->setCallSlotCallback(callback);
 }
 
-Q_DECL_EXPORT CallSlotFn WRAPPER_STDCALL ConnectionManager_GetCallSlotCallback()
+WRAPPER_EXPORT CallSlotFn WRAPPER_STDCALL ConnectionManager_GetCallSlotCallback()
 {
     initConnectionManager();
     return connectionManager->callSlotCallback();
 }
 
-Q_DECL_EXPORT void WRAPPER_STDCALL ConnectionManager_SetDisconnectCallback(DisconnectCallback callback)
+WRAPPER_EXPORT void WRAPPER_STDCALL ConnectionManager_SetDisconnectCallback(DisconnectCallback callback)
 {
     initConnectionManager();
     connectionManager->setDisconnectCallback(callback);
 }
 
-Q_DECL_EXPORT DisconnectCallback WRAPPER_STDCALL ConnectionManager_GetDisconnectCallback()
+WRAPPER_EXPORT DisconnectCallback WRAPPER_STDCALL ConnectionManager_GetDisconnectCallback()
 {
     initConnectionManager();
     return connectionManager->disconnectCallback();
+}
+
+/* Custom wrapper functions for NativeEngine callbacks */
+WRAPPER_EXPORT void WRAPPER_STDCALL NativeEngine_SetKeyPressCallback(NativeEngine *engine, KeyEventFn callback)
+{
+    Q_ASSERT(engine);
+    engine->setKeyPressCallback(callback);
+}
+
+WRAPPER_EXPORT void WRAPPER_STDCALL NativeEngine_SetKeyReleaseCallback(NativeEngine *engine, KeyEventFn callback)
+{
+    Q_ASSERT(engine);
+    engine->setKeyReleaseCallback(callback);
+}
+
+WRAPPER_EXPORT void WRAPPER_STDCALL NativeEngine_SetMouseDoubleClickCallback(NativeEngine *engine, MouseEventFn callback)
+{
+    Q_ASSERT(engine);
+    engine->setMouseDoubleClickCallback(callback);
+}
+
+WRAPPER_EXPORT void WRAPPER_STDCALL NativeEngine_SetMousePressCallback(NativeEngine *engine, MouseEventFn callback)
+{
+    Q_ASSERT(engine);
+    engine->setMousePressCallback(callback);
+}
+
+WRAPPER_EXPORT void WRAPPER_STDCALL NativeEngine_SetMouseReleaseCallback(NativeEngine *engine, MouseEventFn callback)
+{
+    Q_ASSERT(engine);
+    engine->setMouseReleaseCallback(callback);
+}
+
+WRAPPER_EXPORT void WRAPPER_STDCALL NativeEngine_SetMouseMoveCallback(NativeEngine *engine, MouseEventFn callback)
+{
+    Q_ASSERT(engine);
+    engine->setMouseMoveCallback(callback);
+}
+
+WRAPPER_EXPORT void WRAPPER_STDCALL NativeEngine_SetWheelCallback(NativeEngine *engine, WheelEventFn callback)
+{
+    Q_ASSERT(engine);
+    engine->setWheelCallback(callback);
 }
 
 #if defined(__cplusplus)
