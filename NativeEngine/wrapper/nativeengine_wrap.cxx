@@ -642,6 +642,26 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_Scene_CreateSceneNode__SWIG_1(void * jarg1,
 }
 
 
+SWIGEXPORT void * SWIGSTDCALL CSharp_Scene_GetRootSceneNode(void * jarg1) {
+  void * jresult ;
+  Ogre::SceneManager *arg1 = (Ogre::SceneManager *) 0 ;
+  Ogre::SceneNode *result = 0 ;
+  
+  arg1 = (Ogre::SceneManager *)jarg1; 
+  {
+    try {
+      result = (Ogre::SceneNode *)(arg1)->getRootSceneNode();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_NativeEngineSettings_argc_set(void * jarg1, int jarg2) {
   NativeEngineSettings *arg1 = (NativeEngineSettings *) 0 ;
   int arg2 ;

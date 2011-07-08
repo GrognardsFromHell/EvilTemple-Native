@@ -130,6 +130,9 @@ public:
     %rename("CreateSceneNode") createSceneNode;
     SceneNode *createSceneNode();
     SceneNode *createSceneNode(std::string name);
+
+    %rename("GetRootSceneNode") getRootSceneNode;
+    SceneNode *getRootSceneNode();
 private:
     SceneManager();
     ~SceneManager();
