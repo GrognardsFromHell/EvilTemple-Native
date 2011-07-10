@@ -2,10 +2,7 @@
 #define NATIVEENGINE_H
 
 #include <QtGui/QKeyEvent>
-namespace Ogre {
-    class SceneManager;
-}
-
+class Scene;
 class NativeEnginePrivate;
 class QObject;
 
@@ -60,7 +57,7 @@ public:
       */
     QObject *interfaceRoot();
 
-    Ogre::SceneManager *mainScene();
+    Scene *mainScene();
 
     /**
       Sets a function to be called for key events.

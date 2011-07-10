@@ -17,6 +17,7 @@
 
 #include "nativeengine.h"
 #include "ogrenetworkaccessmanager.h"
+#include "scene.h"
 
 static void saveGlState()
 {
@@ -64,10 +65,9 @@ public:
     QDeclarativeView *uiView;
     Ogre::Root *ogreRoot;
     Ogre::RenderWindow *ogreWindow;
-    Ogre::SceneManager *sceneManager;
+    Scene *sceneManager;
     Ogre::Camera *camera;
     Ogre::Viewport *viewport;
-    float zoomLevel;
 
     KeyEventFn keyPressCallback;
     KeyEventFn keyReleaseCallback;
@@ -213,15 +213,15 @@ void NativeEngine::setWheelCallback(WheelEventFn fn)
     d->wheelCallback = fn;
 }
 
-Ogre::SceneManager *NativeEngine::mainScene()
+Scene *NativeEngine::mainScene()
 {
     return d->sceneManager;
 }
 
 NativeEnginePrivate::NativeEnginePrivate(const NativeEngineSettings *settings)
-      : glWidget(0), uiView(0), ogreRoot(0), ogreWindow(0), zoomLevel(1), camera(0), viewport(0),
+      : glWidget(0), uiView(0), ogreRoot(0), ogreWindow(0), camera(0), viewport(0),
         keyPressCallback(0),keyReleaseCallback(0), mouseDoubleClickCallback(0),
-        mousePressCallback(0), mouseReleaseCallback(0), mouseMoveCallback(0),
+        mousePressCallback(0), mouseReleaseCallback(0), mouseMoveCallback(0), sceneManager(0),
         wheelCallback(0)
 {
     initQApplication(settings);
@@ -333,33 +333,18 @@ void NativeEnginePrivate::initOgre()
     resourceManager.initialiseAllResourceGroups();*/
 
     /* Create the actual scene manager */
-    sceneManager = ogreRoot->createSceneManager("DefaultSceneManager");
+    ogreRoot->addSceneManagerFactory(new SceneFactory);
+    sceneManager = static_cast<Scene*>(ogreRoot->createSceneManager("Scene"));
+    sceneManager->resizeWindow(glWidget->width(), glWidget->height());
 
     /* Create and initialize the main camera */
-    camera = sceneManager->createCamera("MainCamera");
-
-    // Position it at 500 in Z direction
-    camera->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
-    camera->setOrthoWindow(glWidget->width() / zoomLevel, glWidget->width() / zoomLevel);
-    camera->setNearClipDistance(1);
-    camera->setFarClipDistance(5000);
-
-    // Old: -44
-    Ogre::Quaternion rot1;
-    rot1.FromAngleAxis(Ogre::Degree(-44.42700648682643f), Ogre::Vector3::NEGATIVE_UNIT_X);
-    Ogre::Matrix4 rotate1matrix(rot1);
-
-    // Old: 90-135
-    Ogre::Quaternion rot2;
-    rot2.FromAngleAxis(Ogre::Degree(135.0000005619373f), Ogre::Vector3::NEGATIVE_UNIT_Y);
-    Ogre::Matrix4 rotate2matrix(rot2);
-
-    camera->setOrientation(rot2.Inverse() * rot1.Inverse());
-    camera->setPosition((rotate1matrix * rotate2matrix).inverse() * Ogre::Vector3(0, 0, 3000));
+    camera = sceneManager->getMainCamera();
 
     /* Create the viewport */
     viewport = ogreWindow->addViewport(camera);
     viewport->setBackgroundColour(Ogre::ColourValue(0.5, 0.5, 0.5));
+
+    sceneManager->setAmbientLight(Ogre::ColourValue(0, 0, 0));
 
     /* TEST */
     /*Ogre::Entity* model = sceneManager->createEntity("meshes/pcs/pc_human_male/pc_human_male.mesh");
@@ -491,8 +476,8 @@ void NativeEnginePrivate::handleGlWidgetResize(int w, int h)
     if (ogreWindow)
         ogreWindow->windowMovedOrResized();
 
-    if (camera)
-        camera->setOrthoWindow(w / zoomLevel, h / zoomLevel);
+    if (sceneManager)
+        sceneManager->resizeWindow(w, h);
 
     if (uiView)
         uiView->resize(QSize(w, h));

@@ -86,9 +86,14 @@ private:
 
 %{
 #include <Ogre.h>
+
+#include "../scene.h"
+#include "../backgroundmap.h"
+using Ogre::ColourValue;
+using Ogre::Radian;
+
 %}
 
-%rename("Scene") SceneManager;
 namespace Ogre {
 
 class MovableObject {
@@ -121,6 +126,81 @@ private:
     ~SceneNode();
 };
 
+class ColourValue {
+public:
+    float r;
+    float g;
+    float b;
+    float a;
+private:
+    ColourValue();
+    ~ColourValue();
+};
+
+class Vector3 {
+public:
+    float x;
+    float y;
+    float z;
+
+    Vector3(float x, float y, float z);
+};
+
+/* Convert between float and Radians by using the radians value */
+%typemap(in) Radian "$1 = Ogre::Radian($input);"
+%typemap(out) Radian "$result = $1.valueRadians();"
+%typemap(ctype) Radian "float"
+%typemap(cstype) Radian "float"
+%typemap(imtype) Radian "float"
+%typemap(csin) Radian "$csinput"
+%typemap(csout, excode=SWIGEXCODE) Radian
+{
+    float ret = $imcall;$excode
+    return ret;
+}
+
+class Light : public MovableObject {
+public:
+
+    enum LightTypes {
+        LT_POINT,
+        LT_DIRECTIONAL,
+        LT_SPOTLIGHT
+    };
+
+    void setType(LightTypes type);
+    LightTypes getType();
+
+    void setDiffuseColour(float red, float green, float blue);
+    const ColourValue &getDiffuseColour() const;
+
+    void setSpecularColour(float red, float green, float blue);
+    const ColourValue &getSpecularColour() const;
+
+    void setAttenuation(float range, float constant, float linear, float quadratic);
+    float getAttenuationRange (void) const;
+    float getAttenuationConstant (void) const;
+    float getAttenuationLinear (void) const;
+    float getAttenuationQuadric (void) const;
+
+    void setPosition(float x, float y, float z);
+    const Vector3 &getPosition(void) const;
+
+    void setDirection(float x, float y, float z);
+    const Vector3 &getDirection() const;
+
+    void setSpotlightRange(Radian innerAngle, Radian outerAngle, float falloff);
+    Radian getSpotlightInnerAngle() const;
+    Radian getSpotlightOuterAngle() const;
+    float getSpotlightFalloff() const;
+
+    void setPowerScale(float power);
+    float getPowerScale() const;
+private:
+    Light();
+    ~Light();
+};
+
 class SceneManager {
 public:
     %rename("CreateEntity") createEntity;
@@ -133,12 +213,62 @@ public:
 
     %rename("GetRootSceneNode") getRootSceneNode;
     SceneNode *getRootSceneNode();
+
+    %rename("CreateLight") createLight;
+    Light *createLight(std::string name);
+    Light *createLight();
 private:
     SceneManager();
     ~SceneManager();
 };
 
+class Camera
+{
+public:
+
+    %rename("SetPosition") setPosition;
+    void setPosition(float x, float y, float z);
+
+    %rename("GetPosition") getPosition;
+    const Vector3 &getPosition() const;
+
+    %rename("Move") move;
+    void move(const Vector3 &vec);
+
+private:
+    Camera();
+    ~Camera();
+};
+
 }
+
+
+class BackgroundMap
+{
+public:
+    /* TODO Color and stuff */
+private:
+    BackgroundMap();
+    ~BackgroundMap();
+};
+
+
+class Scene : public Ogre::SceneManager {
+public:
+
+    %rename("CreateBackgroundMap") createBackgroundMap;
+    BackgroundMap *createBackgroundMap(const std::string &directory);
+
+    %rename("GetMainCamera") getMainCamera;
+    Ogre::Camera *getMainCamera() const;
+
+    %rename("GetCameraOrigin") getCameraOrigin;
+    const Ogre::Vector3 &getCameraOrigin() const;
+
+private:
+    Scene();
+    ~Scene();
+};
 
 struct NativeEngineSettings {
     int argc;
@@ -155,7 +285,7 @@ public:
 
     void renderFrame();
 
-    Ogre::SceneManager *mainScene();
+    Scene *mainScene();
 
     QObject *interfaceRoot();
 };
