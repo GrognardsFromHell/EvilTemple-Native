@@ -18,6 +18,7 @@
 
 // Make classes partial
 %typemap(csclassmodifiers) NativeEngine "public partial class"
+%typemap(csclassmodifiers) ResourceManager "public partial class"
 
 // Typemaps for passing QObject by pointer
 %typemap(in)                           QObject* "/* in* */ $1 = $input;"
@@ -86,6 +87,7 @@ private:
 
 %{
 #include <Ogre.h>
+#include <typeinfo>
 
 #include "../scene.h"
 #include "../backgroundmap.h"
@@ -108,18 +110,82 @@ private:
     ~Entity();
 };
 
-class SceneNode {
+class Node {
+private:
+    Node();
+    ~Node();
+};
+
+class Vector3 {
 public:
-    %rename("AttachObject") attachObject;
+    %rename("X") x;
+    float x;
+    %rename("Y") y;
+    float y;
+    %rename("Z") z;
+    float z;
+
+    Vector3(float x, float y, float z);
+};
+
+class Quaternion {
+public:
+    %rename("X") x;
+    float x;
+    %rename("Y") y;
+    float y;
+    %rename("Z") z;
+    float z;
+    %rename("W") w;
+    float w;
+
+    Quaternion(float w, float x, float y, float z);
+};
+
+class SceneNode : public Node {
+public:
     void attachObject(MovableObject *obj);
 
-    %rename("CreateChildSceneNode") createChildSceneNode;
+    unsigned short numAttachedObjects (void) const;
+    MovableObject *getAttachedObject (unsigned short index);
+
     SceneNode *createChildSceneNode();
     SceneNode *createChildSceneNode(std::string name);
 
+    SceneNode *getParentSceneNode (void) const;
+
+    void removeChild(Node *child);
+    void addChild(Node *child);
+
+    void setVisible(bool visible, bool cascade=true);
+
+    const std::string &getName (void) const;
+
     void setPosition(float x, float y, float z);
+    const Ogre::Vector3 &getPosition() const;
+
     void setOrientation(float w, float x, float y, float z);
+    const Ogre::Quaternion &getOrientation() const;
+
     void setScale(float x, float y, float z);
+    const Ogre::Vector3 &getScale() const;
+
+    unsigned short numChildren (void) const;
+    Node *getChild (unsigned short index) const;
+
+    %extend {
+        void setUserNumber(qint64 number) {
+            $self->setUserAny(Ogre::AnyNumeric(number));
+        }
+
+        qint64 getUserNumber() {
+            const Ogre::Any &userAny = $self->getUserAny();
+            if (userAny.isEmpty() || userAny.getType() != typeid(qint64) )
+                return -1;
+            return Ogre::any_cast<qint64>(userAny);
+        }
+    }
+
 
 private:
     SceneNode();
@@ -135,15 +201,6 @@ public:
 private:
     ColourValue();
     ~ColourValue();
-};
-
-class Vector3 {
-public:
-    float x;
-    float y;
-    float z;
-
-    Vector3(float x, float y, float z);
 };
 
 /* Convert between float and Radians by using the radians value */

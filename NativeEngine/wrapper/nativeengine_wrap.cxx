@@ -344,6 +344,7 @@ SWIGINTERN void SWIG_CSharpException(int code, const char *msg) {
 
 
 #include <Ogre.h>
+#include <typeinfo>
 
 #include "../scene.h"
 #include "../backgroundmap.h"
@@ -351,6 +352,15 @@ using Ogre::ColourValue;
 using Ogre::Radian;
 
 
+SWIGINTERN void Ogre_SceneNode_setUserNumber(Ogre::SceneNode *self,qint64 number){
+            self->setUserAny(Ogre::AnyNumeric(number));
+        }
+SWIGINTERN qint64 Ogre_SceneNode_getUserNumber(Ogre::SceneNode *self){
+            const Ogre::Any &userAny = self->getUserAny();
+            if (userAny.isEmpty() || userAny.getType() != typeid(qint64) )
+                return -1;
+            return Ogre::any_cast<qint64>(userAny);
+        }
 
 #ifdef __cplusplus
 extern "C" {
@@ -412,7 +422,243 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_QByteArray_constData(void * jarg1) {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_SceneNode_AttachObject(void * jarg1, void * jarg2) {
+SWIGEXPORT void SWIGSTDCALL CSharp_Vector3_X_set(void * jarg1, float jarg2) {
+  Ogre::Vector3 *arg1 = (Ogre::Vector3 *) 0 ;
+  float arg2 ;
+  
+  arg1 = (Ogre::Vector3 *)jarg1; 
+  arg2 = (float)jarg2; 
+  if (arg1) (arg1)->x = arg2;
+}
+
+
+SWIGEXPORT float SWIGSTDCALL CSharp_Vector3_X_get(void * jarg1) {
+  float jresult ;
+  Ogre::Vector3 *arg1 = (Ogre::Vector3 *) 0 ;
+  float result;
+  
+  arg1 = (Ogre::Vector3 *)jarg1; 
+  result = (float) ((arg1)->x);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_Vector3_Y_set(void * jarg1, float jarg2) {
+  Ogre::Vector3 *arg1 = (Ogre::Vector3 *) 0 ;
+  float arg2 ;
+  
+  arg1 = (Ogre::Vector3 *)jarg1; 
+  arg2 = (float)jarg2; 
+  if (arg1) (arg1)->y = arg2;
+}
+
+
+SWIGEXPORT float SWIGSTDCALL CSharp_Vector3_Y_get(void * jarg1) {
+  float jresult ;
+  Ogre::Vector3 *arg1 = (Ogre::Vector3 *) 0 ;
+  float result;
+  
+  arg1 = (Ogre::Vector3 *)jarg1; 
+  result = (float) ((arg1)->y);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_Vector3_Z_set(void * jarg1, float jarg2) {
+  Ogre::Vector3 *arg1 = (Ogre::Vector3 *) 0 ;
+  float arg2 ;
+  
+  arg1 = (Ogre::Vector3 *)jarg1; 
+  arg2 = (float)jarg2; 
+  if (arg1) (arg1)->z = arg2;
+}
+
+
+SWIGEXPORT float SWIGSTDCALL CSharp_Vector3_Z_get(void * jarg1) {
+  float jresult ;
+  Ogre::Vector3 *arg1 = (Ogre::Vector3 *) 0 ;
+  float result;
+  
+  arg1 = (Ogre::Vector3 *)jarg1; 
+  result = (float) ((arg1)->z);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_Vector3(float jarg1, float jarg2, float jarg3) {
+  void * jresult ;
+  float arg1 ;
+  float arg2 ;
+  float arg3 ;
+  Ogre::Vector3 *result = 0 ;
+  
+  arg1 = (float)jarg1; 
+  arg2 = (float)jarg2; 
+  arg3 = (float)jarg3; 
+  {
+    try {
+      result = (Ogre::Vector3 *)new Ogre::Vector3(arg1,arg2,arg3);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_Vector3(void * jarg1) {
+  Ogre::Vector3 *arg1 = (Ogre::Vector3 *) 0 ;
+  
+  arg1 = (Ogre::Vector3 *)jarg1; 
+  {
+    try {
+      delete arg1;
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_Quaternion_X_set(void * jarg1, float jarg2) {
+  Ogre::Quaternion *arg1 = (Ogre::Quaternion *) 0 ;
+  float arg2 ;
+  
+  arg1 = (Ogre::Quaternion *)jarg1; 
+  arg2 = (float)jarg2; 
+  if (arg1) (arg1)->x = arg2;
+}
+
+
+SWIGEXPORT float SWIGSTDCALL CSharp_Quaternion_X_get(void * jarg1) {
+  float jresult ;
+  Ogre::Quaternion *arg1 = (Ogre::Quaternion *) 0 ;
+  float result;
+  
+  arg1 = (Ogre::Quaternion *)jarg1; 
+  result = (float) ((arg1)->x);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_Quaternion_Y_set(void * jarg1, float jarg2) {
+  Ogre::Quaternion *arg1 = (Ogre::Quaternion *) 0 ;
+  float arg2 ;
+  
+  arg1 = (Ogre::Quaternion *)jarg1; 
+  arg2 = (float)jarg2; 
+  if (arg1) (arg1)->y = arg2;
+}
+
+
+SWIGEXPORT float SWIGSTDCALL CSharp_Quaternion_Y_get(void * jarg1) {
+  float jresult ;
+  Ogre::Quaternion *arg1 = (Ogre::Quaternion *) 0 ;
+  float result;
+  
+  arg1 = (Ogre::Quaternion *)jarg1; 
+  result = (float) ((arg1)->y);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_Quaternion_Z_set(void * jarg1, float jarg2) {
+  Ogre::Quaternion *arg1 = (Ogre::Quaternion *) 0 ;
+  float arg2 ;
+  
+  arg1 = (Ogre::Quaternion *)jarg1; 
+  arg2 = (float)jarg2; 
+  if (arg1) (arg1)->z = arg2;
+}
+
+
+SWIGEXPORT float SWIGSTDCALL CSharp_Quaternion_Z_get(void * jarg1) {
+  float jresult ;
+  Ogre::Quaternion *arg1 = (Ogre::Quaternion *) 0 ;
+  float result;
+  
+  arg1 = (Ogre::Quaternion *)jarg1; 
+  result = (float) ((arg1)->z);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_Quaternion_W_set(void * jarg1, float jarg2) {
+  Ogre::Quaternion *arg1 = (Ogre::Quaternion *) 0 ;
+  float arg2 ;
+  
+  arg1 = (Ogre::Quaternion *)jarg1; 
+  arg2 = (float)jarg2; 
+  if (arg1) (arg1)->w = arg2;
+}
+
+
+SWIGEXPORT float SWIGSTDCALL CSharp_Quaternion_W_get(void * jarg1) {
+  float jresult ;
+  Ogre::Quaternion *arg1 = (Ogre::Quaternion *) 0 ;
+  float result;
+  
+  arg1 = (Ogre::Quaternion *)jarg1; 
+  result = (float) ((arg1)->w);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_Quaternion(float jarg1, float jarg2, float jarg3, float jarg4) {
+  void * jresult ;
+  float arg1 ;
+  float arg2 ;
+  float arg3 ;
+  float arg4 ;
+  Ogre::Quaternion *result = 0 ;
+  
+  arg1 = (float)jarg1; 
+  arg2 = (float)jarg2; 
+  arg3 = (float)jarg3; 
+  arg4 = (float)jarg4; 
+  {
+    try {
+      result = (Ogre::Quaternion *)new Ogre::Quaternion(arg1,arg2,arg3,arg4);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_Quaternion(void * jarg1) {
+  Ogre::Quaternion *arg1 = (Ogre::Quaternion *) 0 ;
+  
+  arg1 = (Ogre::Quaternion *)jarg1; 
+  {
+    try {
+      delete arg1;
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_SceneNode_attachObject(void * jarg1, void * jarg2) {
   Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
   Ogre::MovableObject *arg2 = (Ogre::MovableObject *) 0 ;
   
@@ -430,7 +676,49 @@ SWIGEXPORT void SWIGSTDCALL CSharp_SceneNode_AttachObject(void * jarg1, void * j
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_SceneNode_CreateChildSceneNode__SWIG_0(void * jarg1) {
+SWIGEXPORT unsigned short SWIGSTDCALL CSharp_SceneNode_numAttachedObjects(void * jarg1) {
+  unsigned short jresult ;
+  Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
+  unsigned short result;
+  
+  arg1 = (Ogre::SceneNode *)jarg1; 
+  {
+    try {
+      result = (unsigned short)((Ogre::SceneNode const *)arg1)->numAttachedObjects();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_SceneNode_getAttachedObject(void * jarg1, unsigned short jarg2) {
+  void * jresult ;
+  Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
+  unsigned short arg2 ;
+  Ogre::MovableObject *result = 0 ;
+  
+  arg1 = (Ogre::SceneNode *)jarg1; 
+  arg2 = (unsigned short)jarg2; 
+  {
+    try {
+      result = (Ogre::MovableObject *)(arg1)->getAttachedObject(arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_SceneNode_createChildSceneNode__SWIG_0(void * jarg1) {
   void * jresult ;
   Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
   Ogre::SceneNode *result = 0 ;
@@ -450,7 +738,7 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_SceneNode_CreateChildSceneNode__SWIG_0(void
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_SceneNode_CreateChildSceneNode__SWIG_1(void * jarg1, char * jarg2) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_SceneNode_createChildSceneNode__SWIG_1(void * jarg1, char * jarg2) {
   void * jresult ;
   Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
   std::string arg2 ;
@@ -476,6 +764,120 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_SceneNode_CreateChildSceneNode__SWIG_1(void
 }
 
 
+SWIGEXPORT void * SWIGSTDCALL CSharp_SceneNode_getParentSceneNode(void * jarg1) {
+  void * jresult ;
+  Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
+  Ogre::SceneNode *result = 0 ;
+  
+  arg1 = (Ogre::SceneNode *)jarg1; 
+  {
+    try {
+      result = (Ogre::SceneNode *)((Ogre::SceneNode const *)arg1)->getParentSceneNode();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_SceneNode_removeChild(void * jarg1, void * jarg2) {
+  Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
+  Ogre::Node *arg2 = (Ogre::Node *) 0 ;
+  
+  arg1 = (Ogre::SceneNode *)jarg1; 
+  arg2 = (Ogre::Node *)jarg2; 
+  {
+    try {
+      (arg1)->removeChild(arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_SceneNode_addChild(void * jarg1, void * jarg2) {
+  Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
+  Ogre::Node *arg2 = (Ogre::Node *) 0 ;
+  
+  arg1 = (Ogre::SceneNode *)jarg1; 
+  arg2 = (Ogre::Node *)jarg2; 
+  {
+    try {
+      (arg1)->addChild(arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_SceneNode_setVisible__SWIG_0(void * jarg1, unsigned int jarg2, unsigned int jarg3) {
+  Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
+  bool arg2 ;
+  bool arg3 ;
+  
+  arg1 = (Ogre::SceneNode *)jarg1; 
+  arg2 = jarg2 ? true : false; 
+  arg3 = jarg3 ? true : false; 
+  {
+    try {
+      (arg1)->setVisible(arg2,arg3);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_SceneNode_setVisible__SWIG_1(void * jarg1, unsigned int jarg2) {
+  Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
+  bool arg2 ;
+  
+  arg1 = (Ogre::SceneNode *)jarg1; 
+  arg2 = jarg2 ? true : false; 
+  {
+    try {
+      (arg1)->setVisible(arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SceneNode_getName(void * jarg1) {
+  char * jresult ;
+  Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
+  std::string *result = 0 ;
+  
+  arg1 = (Ogre::SceneNode *)jarg1; 
+  {
+    try {
+      result = (std::string *) &((Ogre::SceneNode const *)arg1)->getName();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = SWIG_csharp_string_callback(result->c_str()); 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_SceneNode_setPosition(void * jarg1, float jarg2, float jarg3, float jarg4) {
   Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
   float arg2 ;
@@ -495,6 +897,26 @@ SWIGEXPORT void SWIGSTDCALL CSharp_SceneNode_setPosition(void * jarg1, float jar
       };
     }
   }
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_SceneNode_getPosition(void * jarg1) {
+  void * jresult ;
+  Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
+  Ogre::Vector3 *result = 0 ;
+  
+  arg1 = (Ogre::SceneNode *)jarg1; 
+  {
+    try {
+      result = (Ogre::Vector3 *) &((Ogre::SceneNode const *)arg1)->getPosition();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
 }
 
 
@@ -522,6 +944,26 @@ SWIGEXPORT void SWIGSTDCALL CSharp_SceneNode_setOrientation(void * jarg1, float 
 }
 
 
+SWIGEXPORT void * SWIGSTDCALL CSharp_SceneNode_getOrientation(void * jarg1) {
+  void * jresult ;
+  Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
+  Ogre::Quaternion *result = 0 ;
+  
+  arg1 = (Ogre::SceneNode *)jarg1; 
+  {
+    try {
+      result = (Ogre::Quaternion *) &((Ogre::SceneNode const *)arg1)->getOrientation();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_SceneNode_setScale(void * jarg1, float jarg2, float jarg3, float jarg4) {
   Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
   float arg2 ;
@@ -541,6 +983,112 @@ SWIGEXPORT void SWIGSTDCALL CSharp_SceneNode_setScale(void * jarg1, float jarg2,
       };
     }
   }
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_SceneNode_getScale(void * jarg1) {
+  void * jresult ;
+  Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
+  Ogre::Vector3 *result = 0 ;
+  
+  arg1 = (Ogre::SceneNode *)jarg1; 
+  {
+    try {
+      result = (Ogre::Vector3 *) &((Ogre::SceneNode const *)arg1)->getScale();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned short SWIGSTDCALL CSharp_SceneNode_numChildren(void * jarg1) {
+  unsigned short jresult ;
+  Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
+  unsigned short result;
+  
+  arg1 = (Ogre::SceneNode *)jarg1; 
+  {
+    try {
+      result = (unsigned short)((Ogre::SceneNode const *)arg1)->numChildren();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_SceneNode_getChild(void * jarg1, unsigned short jarg2) {
+  void * jresult ;
+  Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
+  unsigned short arg2 ;
+  Ogre::Node *result = 0 ;
+  
+  arg1 = (Ogre::SceneNode *)jarg1; 
+  arg2 = (unsigned short)jarg2; 
+  {
+    try {
+      result = (Ogre::Node *)((Ogre::SceneNode const *)arg1)->getChild(arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_SceneNode_setUserNumber(void * jarg1, void * jarg2) {
+  Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
+  qint64 arg2 ;
+  qint64 *argp2 ;
+  
+  arg1 = (Ogre::SceneNode *)jarg1; 
+  argp2 = (qint64 *)jarg2; 
+  if (!argp2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "Attempt to dereference null qint64", 0);
+    return ;
+  }
+  arg2 = *argp2; 
+  {
+    try {
+      Ogre_SceneNode_setUserNumber(arg1,arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_SceneNode_getUserNumber(void * jarg1) {
+  void * jresult ;
+  Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
+  qint64 result;
+  
+  arg1 = (Ogre::SceneNode *)jarg1; 
+  {
+    try {
+      result = Ogre_SceneNode_getUserNumber(arg1);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = new qint64((const qint64 &)result); 
+  return jresult;
 }
 
 
@@ -629,112 +1177,6 @@ SWIGEXPORT float SWIGSTDCALL CSharp_ColourValue_a_get(void * jarg1) {
   result = (float) ((arg1)->a);
   jresult = result; 
   return jresult;
-}
-
-
-SWIGEXPORT void SWIGSTDCALL CSharp_Vector3_x_set(void * jarg1, float jarg2) {
-  Ogre::Vector3 *arg1 = (Ogre::Vector3 *) 0 ;
-  float arg2 ;
-  
-  arg1 = (Ogre::Vector3 *)jarg1; 
-  arg2 = (float)jarg2; 
-  if (arg1) (arg1)->x = arg2;
-}
-
-
-SWIGEXPORT float SWIGSTDCALL CSharp_Vector3_x_get(void * jarg1) {
-  float jresult ;
-  Ogre::Vector3 *arg1 = (Ogre::Vector3 *) 0 ;
-  float result;
-  
-  arg1 = (Ogre::Vector3 *)jarg1; 
-  result = (float) ((arg1)->x);
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void SWIGSTDCALL CSharp_Vector3_y_set(void * jarg1, float jarg2) {
-  Ogre::Vector3 *arg1 = (Ogre::Vector3 *) 0 ;
-  float arg2 ;
-  
-  arg1 = (Ogre::Vector3 *)jarg1; 
-  arg2 = (float)jarg2; 
-  if (arg1) (arg1)->y = arg2;
-}
-
-
-SWIGEXPORT float SWIGSTDCALL CSharp_Vector3_y_get(void * jarg1) {
-  float jresult ;
-  Ogre::Vector3 *arg1 = (Ogre::Vector3 *) 0 ;
-  float result;
-  
-  arg1 = (Ogre::Vector3 *)jarg1; 
-  result = (float) ((arg1)->y);
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void SWIGSTDCALL CSharp_Vector3_z_set(void * jarg1, float jarg2) {
-  Ogre::Vector3 *arg1 = (Ogre::Vector3 *) 0 ;
-  float arg2 ;
-  
-  arg1 = (Ogre::Vector3 *)jarg1; 
-  arg2 = (float)jarg2; 
-  if (arg1) (arg1)->z = arg2;
-}
-
-
-SWIGEXPORT float SWIGSTDCALL CSharp_Vector3_z_get(void * jarg1) {
-  float jresult ;
-  Ogre::Vector3 *arg1 = (Ogre::Vector3 *) 0 ;
-  float result;
-  
-  arg1 = (Ogre::Vector3 *)jarg1; 
-  result = (float) ((arg1)->z);
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void * SWIGSTDCALL CSharp_new_Vector3(float jarg1, float jarg2, float jarg3) {
-  void * jresult ;
-  float arg1 ;
-  float arg2 ;
-  float arg3 ;
-  Ogre::Vector3 *result = 0 ;
-  
-  arg1 = (float)jarg1; 
-  arg2 = (float)jarg2; 
-  arg3 = (float)jarg3; 
-  {
-    try {
-      result = (Ogre::Vector3 *)new Ogre::Vector3(arg1,arg2,arg3);
-    } catch(std::exception &e) {
-      {
-        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
-      };
-    }
-  }
-  jresult = (void *)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void SWIGSTDCALL CSharp_delete_Vector3(void * jarg1) {
-  Ogre::Vector3 *arg1 = (Ogre::Vector3 *) 0 ;
-  
-  arg1 = (Ogre::Vector3 *)jarg1; 
-  {
-    try {
-      delete arg1;
-    } catch(std::exception &e) {
-      {
-        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
-      };
-    }
-  }
 }
 
 
@@ -1769,6 +2211,10 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_ResourceManager_read__SWIG_1(char * jarg1) 
 
 SWIGEXPORT Ogre::MovableObject * SWIGSTDCALL CSharp_Entity_SWIGUpcast(Ogre::Entity *jarg1) {
     return (Ogre::MovableObject *)jarg1;
+}
+
+SWIGEXPORT Ogre::Node * SWIGSTDCALL CSharp_SceneNode_SWIGUpcast(Ogre::SceneNode *jarg1) {
+    return (Ogre::Node *)jarg1;
 }
 
 SWIGEXPORT Ogre::MovableObject * SWIGSTDCALL CSharp_Light_SWIGUpcast(Ogre::Light *jarg1) {
