@@ -1,4 +1,9 @@
+
+#include <OgreRay.h>
+#include <OgreSceneNode.h>
+
 #include "scene.h"
+#include "intersectutils.h"
 
 const std::string SceneTypeName("Scene");
 
@@ -21,8 +26,7 @@ void SceneFactory::initMetaData(void) const
 }
 
 Scene::Scene(const std::string &name) : SceneManager(name), mZoomLevel(1)
-{
-
+{    
     mMainCamera = createCamera("MainCamera");
 
     // Position it at 500 in Z direction
@@ -85,4 +89,51 @@ void Scene::resizeWindow(int w, int h)
 const Ogre::Vector3 &Scene::getCameraOrigin() const
 {
     return mCameraOrigin;
+}
+
+PickResultList *Scene::pick(float x, float y)
+{
+    Ogre::Ray ray;
+    mMainCamera->getCameraToViewportRay(x, y, &ray);
+
+    Ogre::RaySceneQuery *query = createRayQuery(ray);
+    Ogre::RaySceneQueryResult &results = query->execute();
+
+    PickResultList *resultList = new PickResultList;
+
+    qDebug("Results: %d", results.size());
+    foreach (const Ogre::RaySceneQueryResultEntry &result, results) {
+        const Ogre::Any &userAny = result.movable->getUserAny();
+
+        if (userAny.getType() != typeid(SelectionData))
+            continue;
+
+        SelectionData selection = Ogre::any_cast<SelectionData>(userAny);
+
+        /* Do a cylinder intersection */
+        IntersectResult cylinderResult = IntersectionUtils::intersect(ray,
+                                                                      result.movable->getParentSceneNode()->getPosition(),
+                                                                      selection.radius,
+                                                                      selection.height);
+        qDebug("Cylinder: %d %f", cylinderResult.intersects, cylinderResult.distance);
+
+        if (cylinderResult.intersects) {
+            PickResult pickResult;
+            pickResult.distance = cylinderResult.distance;
+            pickResult.id = selection.id;
+            resultList->append(pickResult);
+        }
+    }
+
+    destroyQuery(query);
+
+    return resultList;
+}
+
+GroundDisc *Scene::createGroundDisc(const std::string &material)
+{
+    Ogre::NameValuePairList params;
+    params["material"] = material;
+
+    return static_cast<GroundDisc*>(createMovableObject(GroundDiscFactory::FACTORY_TYPE_NAME, &params));
 }

@@ -45,6 +45,32 @@
   }
 %}
 
+// Typemaps for passing void* by pointer
+%typemap(in)                           void* "/* in* */ $1 = static_cast<$1_type>($input);"
+%typemap(out, null="/* null* */ NULL") void* "/* out* */ $result = $1;"
+%typemap(argout)                       void* "/* argout* */"
+%typemap(cstype, out="/* cstype* out */ IntPtr") void* "/* cstype* */ IntPtr"
+%typemap(imtype, out="/* imtype* out */ IntPtr") void* "/* imtype* */ IntPtr"
+%typemap(ctype,  out="/* ctype* out */ void*") void* "/* ctype* */ void*"
+%typemap(csin)                         void* "/* csin* */ $csinput"
+%typemap(csvarin, excode=SWIGEXCODE2)  void*
+%{
+        set { $imcall;$excode }
+%}
+%typemap(csout, excode=SWIGEXCODE)     void*
+  {
+        /* csout* */ IntPtr ret = $imcall;$excode
+        return ret;
+  }
+%typemap(csvarout, excode=SWIGEXCODE)  void*
+%{
+  get {
+        /* csvarout* */ IntPtr ret = $imcall;$excode
+        return ret;
+  }
+%}
+
+
 %typemap(cscode) NativeEngine %{
 
     private UserInterface _userInterface;
@@ -57,6 +83,8 @@
         }
     }
 %}
+
+typedef long long int qint64;
 
 /* Typemapping for QByteArray::data() */
 %typemap(cstype, excode=SWIGEXCODE2) const char* constData() "byte[]"
@@ -96,7 +124,21 @@ using Ogre::Radian;
 
 %}
 
+/* Convert between float and Radians by using the radians value */
+%typemap(in) Radian "$1 = Ogre::Radian($input);"
+%typemap(out) Radian "$result = $1.valueRadians();"
+%typemap(ctype) Radian "float"
+%typemap(cstype) Radian "float"
+%typemap(imtype) Radian "float"
+%typemap(csin) Radian "$csinput"
+%typemap(csout, excode=SWIGEXCODE) Radian
+{
+    float ret = $imcall;$excode
+    return ret;
+}
+
 namespace Ogre {
+
 
 class MovableObject {
 private:
@@ -111,6 +153,9 @@ private:
 };
 
 class Node {
+public:
+    void setInitialState();
+
 private:
     Node();
     ~Node();
@@ -139,8 +184,16 @@ public:
     %rename("W") w;
     float w;
 
+    Quaternion();
     Quaternion(float w, float x, float y, float z);
+
+    void FromAngleAxis(Radian rfAngle, const Vector3 &rkAxis);
 };
+
+%{
+#include "../selectiondata.h"
+%}
+
 
 class SceneNode : public Node {
 public:
@@ -173,24 +226,12 @@ public:
     unsigned short numChildren (void) const;
     Node *getChild (unsigned short index) const;
 
-    %extend {
-        void setUserNumber(qint64 number) {
-            $self->setUserAny(Ogre::AnyNumeric(number));
-        }
-
-        qint64 getUserNumber() {
-            const Ogre::Any &userAny = $self->getUserAny();
-            if (userAny.isEmpty() || userAny.getType() != typeid(qint64) )
-                return -1;
-            return Ogre::any_cast<qint64>(userAny);
-        }
-    }
-
-
 private:
     SceneNode();
     ~SceneNode();
 };
+
+%include "selectiondata.i"
 
 class ColourValue {
 public:
@@ -202,19 +243,6 @@ private:
     ColourValue();
     ~ColourValue();
 };
-
-/* Convert between float and Radians by using the radians value */
-%typemap(in) Radian "$1 = Ogre::Radian($input);"
-%typemap(out) Radian "$result = $1.valueRadians();"
-%typemap(ctype) Radian "float"
-%typemap(cstype) Radian "float"
-%typemap(imtype) Radian "float"
-%typemap(csin) Radian "$csinput"
-%typemap(csout, excode=SWIGEXCODE) Radian
-{
-    float ret = $imcall;$excode
-    return ret;
-}
 
 class Light : public MovableObject {
 public:
@@ -258,6 +286,51 @@ private:
     ~Light();
 };
 
+class TransformKeyFrame {
+public:
+    void setTranslate(const Vector3 &trans);
+    const Vector3 &getTranslate() const;
+
+    void setScale(const Vector3 &scale);
+    const Vector3 &getScale() const;
+
+    void setRotation(const Quaternion &quaternion);
+    const Quaternion &getRotation() const;
+private:
+    TransformKeyFrame();
+    ~TransformKeyFrame();
+};
+
+class NodeAnimationTrack {
+public:
+    TransformKeyFrame *createNodeKeyFrame(float timePos);
+private:
+    NodeAnimationTrack();
+    ~NodeAnimationTrack();
+};
+
+class Animation {
+public:
+    NodeAnimationTrack *createNodeTrack(unsigned short handle, Node *node);
+private:
+    Animation();
+    ~Animation();
+};
+
+class AnimationState {
+public:
+    void setEnabled(bool enabled);
+    bool getEnabled();
+
+    void setLoop(bool loop);
+    bool getLoop() const;
+
+    void addTime(float time);
+private:
+    AnimationState();
+    ~AnimationState();
+};
+
 class SceneManager {
 public:
     %rename("CreateEntity") createEntity;
@@ -274,6 +347,20 @@ public:
     %rename("CreateLight") createLight;
     Light *createLight(std::string name);
     Light *createLight();
+
+    %rename("CreateAnimation") createAnimation;
+    Animation *createAnimation(const std::string &name, float length);
+    %rename("GetAnimation") getAnimation;
+    Animation *getAnimation(const std::string &name) const;
+    %rename("HasAnimation") hasAnimation;
+    bool hasAnimation(const std::string &name) const;
+    %rename("DestroyAnimation") destroyAnimation;
+    void destroyAnimation (const std::string &name);
+
+    %rename("CreateAnimationState") createAnimationState;
+    AnimationState *createAnimationState(const std::string &animName);
+    void destroyAnimationState(const std::string &name);
+    AnimationState *getAnimationState(const std::string &name);
 private:
     SceneManager();
     ~SceneManager();
@@ -299,7 +386,6 @@ private:
 
 }
 
-
 class BackgroundMap
 {
 public:
@@ -309,6 +395,29 @@ private:
     ~BackgroundMap();
 };
 
+class GroundDisc : public Ogre::MovableObject
+{
+public:
+    void setMaterial(const std::string &material);
+private:
+    GroundDisc();
+    ~GroundDisc();
+};
+
+template<typename T>
+class QList {
+public:
+    const T &at(int i) const;
+    int size() const;
+};
+
+struct PickResult {
+    qint64 id;
+    float distance;
+};
+
+typedef QList<PickResult> PickResultList;
+%template(PickResultList) QList<PickResult>;
 
 class Scene : public Ogre::SceneManager {
 public:
@@ -316,18 +425,30 @@ public:
     %rename("CreateBackgroundMap") createBackgroundMap;
     BackgroundMap *createBackgroundMap(const std::string &directory);
 
+    %rename("CreateGroundDisc") createGroundDisc;
+    GroundDisc *createGroundDisc(const std::string &material);
+
     %rename("GetMainCamera") getMainCamera;
     Ogre::Camera *getMainCamera() const;
 
     %rename("GetCameraOrigin") getCameraOrigin;
     const Ogre::Vector3 &getCameraOrigin() const;
 
+    %newobject pick;
+    PickResultList* pick(float x, float y);
+
 private:
     Scene();
     ~Scene();
 };
 
+%{
+typedef void (__stdcall *LogCallback)(const char *name, const char *message, int level, bool maskDebug);
+%}
+typedef void* LogCallback;
+
 struct NativeEngineSettings {
+    LogCallback logCallback;
     int argc;
     const char** argv;
 };
@@ -345,6 +466,9 @@ public:
     Scene *mainScene();
 
     QObject *interfaceRoot();
+
+    int windowWidth();
+    int windowHeight();
 };
 
 %include "../resourcemanager.h"

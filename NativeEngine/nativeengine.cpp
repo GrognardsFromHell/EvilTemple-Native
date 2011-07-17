@@ -16,6 +16,7 @@
 #include <Ogre.h>
 
 #include "nativeengine.h"
+#include "grounddisc.h"
 #include "ogrenetworkaccessmanager.h"
 #include "scene.h"
 
@@ -56,7 +57,7 @@ private:
     NativeEnginePrivate* d;
 };
 
-class NativeEnginePrivate : public QObject
+class NativeEnginePrivate : public QObject, public Ogre::LogListener
 {
 Q_OBJECT
 public:
@@ -76,6 +77,7 @@ public:
     MouseEventFn mouseReleaseCallback;
     MouseEventFn mouseMoveCallback;
     WheelEventFn wheelCallback;
+    LogCallback logCallback;
 
     NativeEnginePrivate(const NativeEngineSettings *settings);
     ~NativeEnginePrivate();
@@ -86,6 +88,8 @@ public:
     bool eventFilter(QObject *, QEvent *);
     bool handleGlWidgetEvent(QEvent*);
     void handleGlWidgetResize(int w, int h);
+
+    void messageLogged(const std::string& message, Ogre::LogMessageLevel lml, bool maskDebug, const std::string &logName);
 
 public slots:
     void viewStatusChanged();
@@ -218,13 +222,25 @@ Scene *NativeEngine::mainScene()
     return d->sceneManager;
 }
 
+int NativeEngine::windowWidth() const
+{
+    return d->glWidget->width();
+}
+
+int NativeEngine::windowHeight() const
+{
+    return d->glWidget->height();
+}
+
 NativeEnginePrivate::NativeEnginePrivate(const NativeEngineSettings *settings)
       : glWidget(0), uiView(0), ogreRoot(0), ogreWindow(0), camera(0), viewport(0),
         keyPressCallback(0),keyReleaseCallback(0), mouseDoubleClickCallback(0),
         mousePressCallback(0), mouseReleaseCallback(0), mouseMoveCallback(0), sceneManager(0),
-        wheelCallback(0)
+        wheelCallback(0), logCallback(0)
 {
     initQApplication(settings);
+
+    logCallback = settings->logCallback;
 
     /* Initialize OpenGL context format */
     QGLFormat format = QGLFormat::defaultFormat();
@@ -303,6 +319,10 @@ void NativeEnginePrivate::initOgre()
     Ogre::String pluginsCfg = "plugins.cfg";
 #endif
 
+    Ogre::LogManager * lm = new Ogre::LogManager();
+    Ogre::Log *log = lm->createLog("", true, false, false);
+    log->addListener(this);
+
     /* Initialize Ogre */
     ogreRoot = new Ogre::Root(pluginsCfg);
 
@@ -334,6 +354,7 @@ void NativeEnginePrivate::initOgre()
 
     /* Create the actual scene manager */
     ogreRoot->addSceneManagerFactory(new SceneFactory);
+    ogreRoot->addMovableObjectFactory(new GroundDiscFactory);
     sceneManager = static_cast<Scene*>(ogreRoot->createSceneManager("Scene"));
     sceneManager->resizeWindow(glWidget->width(), glWidget->height());
 
@@ -500,6 +521,14 @@ void NativeEnginePrivate::viewStatusChanged()
 
         throw std::exception(message.toLatin1().constData());
     }
+}
+
+void NativeEnginePrivate::messageLogged(const std::string& message, Ogre::LogMessageLevel lml, bool maskDebug, const std::string &logName)
+{
+    if (!logCallback)
+        return;
+
+    logCallback(logName.c_str(), message.c_str(), lml, maskDebug);
 }
 
 #include "nativeengine.moc"

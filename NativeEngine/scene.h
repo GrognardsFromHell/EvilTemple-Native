@@ -4,8 +4,18 @@
 #include <string>
 
 #include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
 
 #include "backgroundmap.h"
+#include "grounddisc.h"
+#include "selectiondata.h"
+
+struct PickResult {
+    qint64 id;
+    float distance;
+};
+
+typedef QList<PickResult> PickResultList;
 
 class SceneFactory : public Ogre::SceneManagerFactory
 {
@@ -33,7 +43,14 @@ public:
 
     const Ogre::Vector3 &getCameraOrigin() const;
 
+    /*
+      Please note that x and y are in [0,1] normalized screen coordinates.
+      */
+    PickResultList *pick(float x, float y);
+
     BackgroundMap *createBackgroundMap(const std::string &directory);
+
+    GroundDisc *createGroundDisc(const std::string &material);
 private:
     Ogre::Camera *mMainCamera;
     Ogre::Vector3 mCameraOrigin;

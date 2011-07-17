@@ -352,15 +352,42 @@ using Ogre::ColourValue;
 using Ogre::Radian;
 
 
-SWIGINTERN void Ogre_SceneNode_setUserNumber(Ogre::SceneNode *self,qint64 number){
-            self->setUserAny(Ogre::AnyNumeric(number));
-        }
-SWIGINTERN qint64 Ogre_SceneNode_getUserNumber(Ogre::SceneNode *self){
-            const Ogre::Any &userAny = self->getUserAny();
-            if (userAny.isEmpty() || userAny.getType() != typeid(qint64) )
-                return -1;
-            return Ogre::any_cast<qint64>(userAny);
-        }
+SWIGINTERN void Ogre_MovableObject_setSelectionData(Ogre::MovableObject *self,qint64 id,float radius,float height){
+        ::SelectionData selectionData(id, radius, height);
+
+        self->setUserAny(Ogre::Any(selectionData));
+    }
+SWIGINTERN bool Ogre_MovableObject_hasSelectionData(Ogre::MovableObject *self){
+        const Ogre::Any &userAny = self->getUserAny();
+        return (!userAny.isEmpty() && userAny.getType() == typeid(::SelectionData) );
+    }
+SWIGINTERN void Ogre_MovableObject_clearSelectionData(Ogre::MovableObject *self){
+        self->setUserAny(Ogre::Any());
+    }
+SWIGINTERN qint64 Ogre_MovableObject_getSelectionId(Ogre::MovableObject *self){
+        const Ogre::Any &userAny = self->getUserAny();
+        if (userAny.isEmpty() || userAny.getType() != typeid(::SelectionData))
+            throw new std::exception("This object doesn't have selection data.");
+        return Ogre::any_cast<::SelectionData>(self->getUserAny()).id;
+    }
+SWIGINTERN float Ogre_MovableObject_getSelectionRadius(Ogre::MovableObject *self){
+        const Ogre::Any &userAny = self->getUserAny();
+        if (userAny.isEmpty() || userAny.getType() != typeid(::SelectionData))
+            throw new std::exception("This object doesn't have selection data.");
+        return Ogre::any_cast<::SelectionData>(self->getUserAny()).radius;
+    }
+SWIGINTERN float Ogre_MovableObject_getSelectionHeight(Ogre::MovableObject *self){
+        const Ogre::Any &userAny = self->getUserAny();
+        if (userAny.isEmpty() || userAny.getType() != typeid(::SelectionData))
+            throw new std::exception("This object doesn't have selection data.");
+        return Ogre::any_cast<::SelectionData>(self->getUserAny()).height;
+    }
+
+#include "../selectiondata.h"
+
+
+typedef void (__stdcall *LogCallback)(const char *name, const char *message, int level, bool maskDebug);
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -419,6 +446,140 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_QByteArray_constData(void * jarg1) {
   }
   jresult = SWIG_csharp_string_callback((const char *)result); 
   return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_MovableObject_setSelectionData(void * jarg1, long long jarg2, float jarg3, float jarg4) {
+  Ogre::MovableObject *arg1 = (Ogre::MovableObject *) 0 ;
+  qint64 arg2 ;
+  float arg3 ;
+  float arg4 ;
+  
+  arg1 = (Ogre::MovableObject *)jarg1; 
+  arg2 = (qint64)jarg2; 
+  arg3 = (float)jarg3; 
+  arg4 = (float)jarg4; 
+  {
+    try {
+      Ogre_MovableObject_setSelectionData(arg1,arg2,arg3,arg4);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MovableObject_hasSelectionData(void * jarg1) {
+  unsigned int jresult ;
+  Ogre::MovableObject *arg1 = (Ogre::MovableObject *) 0 ;
+  bool result;
+  
+  arg1 = (Ogre::MovableObject *)jarg1; 
+  {
+    try {
+      result = (bool)Ogre_MovableObject_hasSelectionData(arg1);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_MovableObject_clearSelectionData(void * jarg1) {
+  Ogre::MovableObject *arg1 = (Ogre::MovableObject *) 0 ;
+  
+  arg1 = (Ogre::MovableObject *)jarg1; 
+  {
+    try {
+      Ogre_MovableObject_clearSelectionData(arg1);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT long long SWIGSTDCALL CSharp_MovableObject_getSelectionId(void * jarg1) {
+  long long jresult ;
+  Ogre::MovableObject *arg1 = (Ogre::MovableObject *) 0 ;
+  qint64 result;
+  
+  arg1 = (Ogre::MovableObject *)jarg1; 
+  {
+    try {
+      result = (qint64)Ogre_MovableObject_getSelectionId(arg1);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT float SWIGSTDCALL CSharp_MovableObject_getSelectionRadius(void * jarg1) {
+  float jresult ;
+  Ogre::MovableObject *arg1 = (Ogre::MovableObject *) 0 ;
+  float result;
+  
+  arg1 = (Ogre::MovableObject *)jarg1; 
+  {
+    try {
+      result = (float)Ogre_MovableObject_getSelectionRadius(arg1);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT float SWIGSTDCALL CSharp_MovableObject_getSelectionHeight(void * jarg1) {
+  float jresult ;
+  Ogre::MovableObject *arg1 = (Ogre::MovableObject *) 0 ;
+  float result;
+  
+  arg1 = (Ogre::MovableObject *)jarg1; 
+  {
+    try {
+      result = (float)Ogre_MovableObject_getSelectionHeight(arg1);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_Node_setInitialState(void * jarg1) {
+  Ogre::Node *arg1 = (Ogre::Node *) 0 ;
+  
+  arg1 = (Ogre::Node *)jarg1; 
+  {
+    try {
+      (arg1)->setInitialState();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
 }
 
 
@@ -616,7 +777,25 @@ SWIGEXPORT float SWIGSTDCALL CSharp_Quaternion_W_get(void * jarg1) {
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_new_Quaternion(float jarg1, float jarg2, float jarg3, float jarg4) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_Quaternion__SWIG_0() {
+  void * jresult ;
+  Ogre::Quaternion *result = 0 ;
+  
+  {
+    try {
+      result = (Ogre::Quaternion *)new Ogre::Quaternion();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_Quaternion__SWIG_1(float jarg1, float jarg2, float jarg3, float jarg4) {
   void * jresult ;
   float arg1 ;
   float arg2 ;
@@ -639,6 +818,30 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_new_Quaternion(float jarg1, float jarg2, fl
   }
   jresult = (void *)result; 
   return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_Quaternion_FromAngleAxis(void * jarg1, float jarg2, void * jarg3) {
+  Ogre::Quaternion *arg1 = (Ogre::Quaternion *) 0 ;
+  Radian arg2 ;
+  Ogre::Vector3 *arg3 = 0 ;
+  
+  arg1 = (Ogre::Quaternion *)jarg1; 
+  arg2 = Ogre::Radian(jarg2);
+  arg3 = (Ogre::Vector3 *)jarg3;
+  if (!arg3) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "Ogre::Vector3 const & type is null", 0);
+    return ;
+  } 
+  {
+    try {
+      (arg1)->FromAngleAxis(arg2,(Ogre::Vector3 const &)*arg3);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
 }
 
 
@@ -1044,50 +1247,6 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_SceneNode_getChild(void * jarg1, unsigned s
     }
   }
   jresult = (void *)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void SWIGSTDCALL CSharp_SceneNode_setUserNumber(void * jarg1, void * jarg2) {
-  Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
-  qint64 arg2 ;
-  qint64 *argp2 ;
-  
-  arg1 = (Ogre::SceneNode *)jarg1; 
-  argp2 = (qint64 *)jarg2; 
-  if (!argp2) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "Attempt to dereference null qint64", 0);
-    return ;
-  }
-  arg2 = *argp2; 
-  {
-    try {
-      Ogre_SceneNode_setUserNumber(arg1,arg2);
-    } catch(std::exception &e) {
-      {
-        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
-      };
-    }
-  }
-}
-
-
-SWIGEXPORT void * SWIGSTDCALL CSharp_SceneNode_getUserNumber(void * jarg1) {
-  void * jresult ;
-  Ogre::SceneNode *arg1 = (Ogre::SceneNode *) 0 ;
-  qint64 result;
-  
-  arg1 = (Ogre::SceneNode *)jarg1; 
-  {
-    try {
-      result = Ogre_SceneNode_getUserNumber(arg1);
-    } catch(std::exception &e) {
-      {
-        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
-      };
-    }
-  }
-  jresult = new qint64((const qint64 &)result); 
   return jresult;
 }
 
@@ -1610,6 +1769,272 @@ SWIGEXPORT float SWIGSTDCALL CSharp_Light_getPowerScale(void * jarg1) {
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_TransformKeyFrame_setTranslate(void * jarg1, void * jarg2) {
+  Ogre::TransformKeyFrame *arg1 = (Ogre::TransformKeyFrame *) 0 ;
+  Ogre::Vector3 *arg2 = 0 ;
+  
+  arg1 = (Ogre::TransformKeyFrame *)jarg1; 
+  arg2 = (Ogre::Vector3 *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "Ogre::Vector3 const & type is null", 0);
+    return ;
+  } 
+  {
+    try {
+      (arg1)->setTranslate((Ogre::Vector3 const &)*arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_TransformKeyFrame_getTranslate(void * jarg1) {
+  void * jresult ;
+  Ogre::TransformKeyFrame *arg1 = (Ogre::TransformKeyFrame *) 0 ;
+  Ogre::Vector3 *result = 0 ;
+  
+  arg1 = (Ogre::TransformKeyFrame *)jarg1; 
+  {
+    try {
+      result = (Ogre::Vector3 *) &((Ogre::TransformKeyFrame const *)arg1)->getTranslate();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_TransformKeyFrame_setScale(void * jarg1, void * jarg2) {
+  Ogre::TransformKeyFrame *arg1 = (Ogre::TransformKeyFrame *) 0 ;
+  Ogre::Vector3 *arg2 = 0 ;
+  
+  arg1 = (Ogre::TransformKeyFrame *)jarg1; 
+  arg2 = (Ogre::Vector3 *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "Ogre::Vector3 const & type is null", 0);
+    return ;
+  } 
+  {
+    try {
+      (arg1)->setScale((Ogre::Vector3 const &)*arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_TransformKeyFrame_getScale(void * jarg1) {
+  void * jresult ;
+  Ogre::TransformKeyFrame *arg1 = (Ogre::TransformKeyFrame *) 0 ;
+  Ogre::Vector3 *result = 0 ;
+  
+  arg1 = (Ogre::TransformKeyFrame *)jarg1; 
+  {
+    try {
+      result = (Ogre::Vector3 *) &((Ogre::TransformKeyFrame const *)arg1)->getScale();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_TransformKeyFrame_setRotation(void * jarg1, void * jarg2) {
+  Ogre::TransformKeyFrame *arg1 = (Ogre::TransformKeyFrame *) 0 ;
+  Ogre::Quaternion *arg2 = 0 ;
+  
+  arg1 = (Ogre::TransformKeyFrame *)jarg1; 
+  arg2 = (Ogre::Quaternion *)jarg2;
+  if (!arg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "Ogre::Quaternion const & type is null", 0);
+    return ;
+  } 
+  {
+    try {
+      (arg1)->setRotation((Ogre::Quaternion const &)*arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_TransformKeyFrame_getRotation(void * jarg1) {
+  void * jresult ;
+  Ogre::TransformKeyFrame *arg1 = (Ogre::TransformKeyFrame *) 0 ;
+  Ogre::Quaternion *result = 0 ;
+  
+  arg1 = (Ogre::TransformKeyFrame *)jarg1; 
+  {
+    try {
+      result = (Ogre::Quaternion *) &((Ogre::TransformKeyFrame const *)arg1)->getRotation();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_NodeAnimationTrack_createNodeKeyFrame(void * jarg1, float jarg2) {
+  void * jresult ;
+  Ogre::NodeAnimationTrack *arg1 = (Ogre::NodeAnimationTrack *) 0 ;
+  float arg2 ;
+  Ogre::TransformKeyFrame *result = 0 ;
+  
+  arg1 = (Ogre::NodeAnimationTrack *)jarg1; 
+  arg2 = (float)jarg2; 
+  {
+    try {
+      result = (Ogre::TransformKeyFrame *)(arg1)->createNodeKeyFrame(arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_Animation_createNodeTrack(void * jarg1, unsigned short jarg2, void * jarg3) {
+  void * jresult ;
+  Ogre::Animation *arg1 = (Ogre::Animation *) 0 ;
+  unsigned short arg2 ;
+  Ogre::Node *arg3 = (Ogre::Node *) 0 ;
+  Ogre::NodeAnimationTrack *result = 0 ;
+  
+  arg1 = (Ogre::Animation *)jarg1; 
+  arg2 = (unsigned short)jarg2; 
+  arg3 = (Ogre::Node *)jarg3; 
+  {
+    try {
+      result = (Ogre::NodeAnimationTrack *)(arg1)->createNodeTrack(arg2,arg3);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_AnimationState_setEnabled(void * jarg1, unsigned int jarg2) {
+  Ogre::AnimationState *arg1 = (Ogre::AnimationState *) 0 ;
+  bool arg2 ;
+  
+  arg1 = (Ogre::AnimationState *)jarg1; 
+  arg2 = jarg2 ? true : false; 
+  {
+    try {
+      (arg1)->setEnabled(arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_AnimationState_getEnabled(void * jarg1) {
+  unsigned int jresult ;
+  Ogre::AnimationState *arg1 = (Ogre::AnimationState *) 0 ;
+  bool result;
+  
+  arg1 = (Ogre::AnimationState *)jarg1; 
+  {
+    try {
+      result = (bool)(arg1)->getEnabled();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_AnimationState_setLoop(void * jarg1, unsigned int jarg2) {
+  Ogre::AnimationState *arg1 = (Ogre::AnimationState *) 0 ;
+  bool arg2 ;
+  
+  arg1 = (Ogre::AnimationState *)jarg1; 
+  arg2 = jarg2 ? true : false; 
+  {
+    try {
+      (arg1)->setLoop(arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_AnimationState_getLoop(void * jarg1) {
+  unsigned int jresult ;
+  Ogre::AnimationState *arg1 = (Ogre::AnimationState *) 0 ;
+  bool result;
+  
+  arg1 = (Ogre::AnimationState *)jarg1; 
+  {
+    try {
+      result = (bool)((Ogre::AnimationState const *)arg1)->getLoop();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_AnimationState_addTime(void * jarg1, float jarg2) {
+  Ogre::AnimationState *arg1 = (Ogre::AnimationState *) 0 ;
+  float arg2 ;
+  
+  arg1 = (Ogre::AnimationState *)jarg1; 
+  arg2 = (float)jarg2; 
+  {
+    try {
+      (arg1)->addTime(arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_SceneManager_CreateEntity__SWIG_0(void * jarg1, char * jarg2, char * jarg3) {
   void * jresult ;
   Ogre::SceneManager *arg1 = (Ogre::SceneManager *) 0 ;
@@ -1780,6 +2205,189 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_SceneManager_CreateLight__SWIG_1(void * jar
 }
 
 
+SWIGEXPORT void * SWIGSTDCALL CSharp_SceneManager_CreateAnimation(void * jarg1, char * jarg2, float jarg3) {
+  void * jresult ;
+  Ogre::SceneManager *arg1 = (Ogre::SceneManager *) 0 ;
+  std::string *arg2 = 0 ;
+  float arg3 ;
+  Ogre::Animation *result = 0 ;
+  
+  arg1 = (Ogre::SceneManager *)jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  std::string arg2_str(jarg2);
+  arg2 = &arg2_str; 
+  arg3 = (float)jarg3; 
+  {
+    try {
+      result = (Ogre::Animation *)(arg1)->createAnimation((std::string const &)*arg2,arg3);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_SceneManager_GetAnimation(void * jarg1, char * jarg2) {
+  void * jresult ;
+  Ogre::SceneManager *arg1 = (Ogre::SceneManager *) 0 ;
+  std::string *arg2 = 0 ;
+  Ogre::Animation *result = 0 ;
+  
+  arg1 = (Ogre::SceneManager *)jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  std::string arg2_str(jarg2);
+  arg2 = &arg2_str; 
+  {
+    try {
+      result = (Ogre::Animation *)((Ogre::SceneManager const *)arg1)->getAnimation((std::string const &)*arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SceneManager_HasAnimation(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  Ogre::SceneManager *arg1 = (Ogre::SceneManager *) 0 ;
+  std::string *arg2 = 0 ;
+  bool result;
+  
+  arg1 = (Ogre::SceneManager *)jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  std::string arg2_str(jarg2);
+  arg2 = &arg2_str; 
+  {
+    try {
+      result = (bool)((Ogre::SceneManager const *)arg1)->hasAnimation((std::string const &)*arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_SceneManager_DestroyAnimation(void * jarg1, char * jarg2) {
+  Ogre::SceneManager *arg1 = (Ogre::SceneManager *) 0 ;
+  std::string *arg2 = 0 ;
+  
+  arg1 = (Ogre::SceneManager *)jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return ;
+  }
+  std::string arg2_str(jarg2);
+  arg2 = &arg2_str; 
+  {
+    try {
+      (arg1)->destroyAnimation((std::string const &)*arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_SceneManager_CreateAnimationState(void * jarg1, char * jarg2) {
+  void * jresult ;
+  Ogre::SceneManager *arg1 = (Ogre::SceneManager *) 0 ;
+  std::string *arg2 = 0 ;
+  Ogre::AnimationState *result = 0 ;
+  
+  arg1 = (Ogre::SceneManager *)jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  std::string arg2_str(jarg2);
+  arg2 = &arg2_str; 
+  {
+    try {
+      result = (Ogre::AnimationState *)(arg1)->createAnimationState((std::string const &)*arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_SceneManager_destroyAnimationState(void * jarg1, char * jarg2) {
+  Ogre::SceneManager *arg1 = (Ogre::SceneManager *) 0 ;
+  std::string *arg2 = 0 ;
+  
+  arg1 = (Ogre::SceneManager *)jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return ;
+  }
+  std::string arg2_str(jarg2);
+  arg2 = &arg2_str; 
+  {
+    try {
+      (arg1)->destroyAnimationState((std::string const &)*arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_SceneManager_getAnimationState(void * jarg1, char * jarg2) {
+  void * jresult ;
+  Ogre::SceneManager *arg1 = (Ogre::SceneManager *) 0 ;
+  std::string *arg2 = 0 ;
+  Ogre::AnimationState *result = 0 ;
+  
+  arg1 = (Ogre::SceneManager *)jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  std::string arg2_str(jarg2);
+  arg2 = &arg2_str; 
+  {
+    try {
+      result = (Ogre::AnimationState *)(arg1)->getAnimationState((std::string const &)*arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_Camera_SetPosition(void * jarg1, float jarg2, float jarg3, float jarg4) {
   Ogre::Camera *arg1 = (Ogre::Camera *) 0 ;
   float arg2 ;
@@ -1844,6 +2452,183 @@ SWIGEXPORT void SWIGSTDCALL CSharp_Camera_Move(void * jarg1, void * jarg2) {
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_GroundDisc_setMaterial(void * jarg1, char * jarg2) {
+  GroundDisc *arg1 = (GroundDisc *) 0 ;
+  std::string *arg2 = 0 ;
+  
+  arg1 = (GroundDisc *)jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return ;
+  }
+  std::string arg2_str(jarg2);
+  arg2 = &arg2_str; 
+  {
+    try {
+      (arg1)->setMaterial((std::string const &)*arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_PickResult_id_set(void * jarg1, long long jarg2) {
+  PickResult *arg1 = (PickResult *) 0 ;
+  qint64 arg2 ;
+  
+  arg1 = (PickResult *)jarg1; 
+  arg2 = (qint64)jarg2; 
+  if (arg1) (arg1)->id = arg2;
+}
+
+
+SWIGEXPORT long long SWIGSTDCALL CSharp_PickResult_id_get(void * jarg1) {
+  long long jresult ;
+  PickResult *arg1 = (PickResult *) 0 ;
+  qint64 result;
+  
+  arg1 = (PickResult *)jarg1; 
+  result = (qint64) ((arg1)->id);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_PickResult_distance_set(void * jarg1, float jarg2) {
+  PickResult *arg1 = (PickResult *) 0 ;
+  float arg2 ;
+  
+  arg1 = (PickResult *)jarg1; 
+  arg2 = (float)jarg2; 
+  if (arg1) (arg1)->distance = arg2;
+}
+
+
+SWIGEXPORT float SWIGSTDCALL CSharp_PickResult_distance_get(void * jarg1) {
+  float jresult ;
+  PickResult *arg1 = (PickResult *) 0 ;
+  float result;
+  
+  arg1 = (PickResult *)jarg1; 
+  result = (float) ((arg1)->distance);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_PickResult() {
+  void * jresult ;
+  PickResult *result = 0 ;
+  
+  {
+    try {
+      result = (PickResult *)new PickResult();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_PickResult(void * jarg1) {
+  PickResult *arg1 = (PickResult *) 0 ;
+  
+  arg1 = (PickResult *)jarg1; 
+  {
+    try {
+      delete arg1;
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_PickResultList_at(void * jarg1, int jarg2) {
+  void * jresult ;
+  QList< PickResult > *arg1 = (QList< PickResult > *) 0 ;
+  int arg2 ;
+  PickResult *result = 0 ;
+  
+  arg1 = (QList< PickResult > *)jarg1; 
+  arg2 = (int)jarg2; 
+  {
+    try {
+      result = (PickResult *) &((QList< PickResult > const *)arg1)->at(arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_PickResultList_size(void * jarg1) {
+  int jresult ;
+  QList< PickResult > *arg1 = (QList< PickResult > *) 0 ;
+  int result;
+  
+  arg1 = (QList< PickResult > *)jarg1; 
+  {
+    try {
+      result = (int)((QList< PickResult > const *)arg1)->size();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_PickResultList() {
+  void * jresult ;
+  QList< PickResult > *result = 0 ;
+  
+  {
+    try {
+      result = (QList< PickResult > *)new QList< PickResult >();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_PickResultList(void * jarg1) {
+  QList< PickResult > *arg1 = (QList< PickResult > *) 0 ;
+  
+  arg1 = (QList< PickResult > *)jarg1; 
+  {
+    try {
+      delete arg1;
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return ; 
+      };
+    }
+  }
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_Scene_CreateBackgroundMap(void * jarg1, char * jarg2) {
   void * jresult ;
   Scene *arg1 = (Scene *) 0 ;
@@ -1860,6 +2645,33 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_Scene_CreateBackgroundMap(void * jarg1, cha
   {
     try {
       result = (BackgroundMap *)(arg1)->createBackgroundMap((std::string const &)*arg2);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_Scene_CreateGroundDisc(void * jarg1, char * jarg2) {
+  void * jresult ;
+  Scene *arg1 = (Scene *) 0 ;
+  std::string *arg2 = 0 ;
+  GroundDisc *result = 0 ;
+  
+  arg1 = (Scene *)jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  std::string arg2_str(jarg2);
+  arg2 = &arg2_str; 
+  {
+    try {
+      result = (GroundDisc *)(arg1)->createGroundDisc((std::string const &)*arg2);
     } catch(std::exception &e) {
       {
         SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
@@ -1907,6 +2719,53 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_Scene_GetCameraOrigin(void * jarg1) {
     }
   }
   jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_Scene_pick(void * jarg1, float jarg2, float jarg3) {
+  void * jresult ;
+  Scene *arg1 = (Scene *) 0 ;
+  float arg2 ;
+  float arg3 ;
+  PickResultList *result = 0 ;
+  
+  arg1 = (Scene *)jarg1; 
+  arg2 = (float)jarg2; 
+  arg3 = (float)jarg3; 
+  {
+    try {
+      result = (PickResultList *)(arg1)->pick(arg2,arg3);
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_NativeEngineSettings_logCallback_set(void * jarg1, /* ctype* */ void* jarg2) {
+  NativeEngineSettings *arg1 = (NativeEngineSettings *) 0 ;
+  LogCallback arg2 = (LogCallback) 0 ;
+  
+  arg1 = (NativeEngineSettings *)jarg1; 
+  /* in* */ arg2 = static_cast<LogCallback>(jarg2);
+  if (arg1) (arg1)->logCallback = arg2;
+  /* argout* */
+}
+
+
+SWIGEXPORT /* ctype* out */ void* SWIGSTDCALL CSharp_NativeEngineSettings_logCallback_get(void * jarg1) {
+  /* ctype* out */ void* jresult ;
+  NativeEngineSettings *arg1 = (NativeEngineSettings *) 0 ;
+  LogCallback result;
+  
+  arg1 = (NativeEngineSettings *)jarg1; 
+  result = (LogCallback) ((arg1)->logCallback);
+  /* out* */ jresult = result;
   return jresult;
 }
 
@@ -2097,6 +2956,46 @@ SWIGEXPORT /* ctype* out */ QObject* SWIGSTDCALL CSharp_NativeEngine_interfaceRo
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_NativeEngine_windowWidth(void * jarg1) {
+  int jresult ;
+  NativeEngine *arg1 = (NativeEngine *) 0 ;
+  int result;
+  
+  arg1 = (NativeEngine *)jarg1; 
+  {
+    try {
+      result = (int)(arg1)->windowWidth();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_NativeEngine_windowHeight(void * jarg1) {
+  int jresult ;
+  NativeEngine *arg1 = (NativeEngine *) 0 ;
+  int result;
+  
+  arg1 = (NativeEngine *)jarg1; 
+  {
+    try {
+      result = (int)(arg1)->windowHeight();
+    } catch(std::exception &e) {
+      {
+        SWIG_CSharpException(SWIG_UnknownError, e.what()); return 0; 
+      };
+    }
+  }
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_ResourceManager_addZipArchive(char * jarg1, char * jarg2) {
   char *arg1 = (char *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -2218,6 +3117,10 @@ SWIGEXPORT Ogre::Node * SWIGSTDCALL CSharp_SceneNode_SWIGUpcast(Ogre::SceneNode 
 }
 
 SWIGEXPORT Ogre::MovableObject * SWIGSTDCALL CSharp_Light_SWIGUpcast(Ogre::Light *jarg1) {
+    return (Ogre::MovableObject *)jarg1;
+}
+
+SWIGEXPORT Ogre::MovableObject * SWIGSTDCALL CSharp_GroundDisc_SWIGUpcast(GroundDisc *jarg1) {
     return (Ogre::MovableObject *)jarg1;
 }
 

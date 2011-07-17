@@ -17,7 +17,9 @@ SOURCES += nativeengine.cpp \
     connectionmanager.cpp \
     resourcemanager.cpp \
     backgroundmap.cpp \
-    scene.cpp
+    scene.cpp \
+    intersectutils.cpp \
+    grounddisc.cpp
 
 # ADD SWIG WRAPPERS
 SOURCES += wrapper/nativeengine_wrap.cxx
@@ -31,7 +33,10 @@ HEADERS += nativeengine.h \
     wraputils.h \
     backgroundmap.h \
     utils.h \
-    scene.h
+    scene.h \
+    intersectutils.h \
+    selectiondata.h \
+    grounddisc.h
 
 include(../Common.pri)
 include(../ThirdParty/Ogre.pri)
@@ -41,4 +46,6 @@ RESOURCES += \
 
 OTHER_FILES += \
     InterfaceRoot.qml \
-    wrapper/nativeengine.i
+    wrapper/nativeengine.i \
+    selectiondata.i \
+    wrapper/selectiondata.i
